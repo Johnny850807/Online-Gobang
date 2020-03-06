@@ -1,14 +1,11 @@
 package tw.waterball.gobang.model;
 
-import tw.waterball.gobang.Board;
 import tw.waterball.gobang.Gobang;
 import tw.waterball.gobang.Tile;
-import tw.waterball.gobang.model.repositories.GameRepository;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +23,11 @@ public class Game {
 
     @NotNull // the p1 should exist because one must be a host
     private String p1Token;
-
     private String p2Token;
 
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
     private List<GameRecord> gameRecords = new ArrayList<>();
+
 
     public void addGameRecord(GameRecord record) {
         record.setGame(this);
@@ -86,7 +83,7 @@ public class Game {
 
         for (GameRecord gameRecord : gameRecords) {
             Tile.Color color = gameRecord.getTeam() == Team.BLACK ? Tile.Color.BLACK : Tile.Color.WHITE;
-            gobang.putChess(gameRecord.getRow(), gameRecord.getCol(), color);
+            gobang.putChess(gameRecord.getPlaceRow(), gameRecord.getPlaceCol(), color);
         }
 
         return gobang;

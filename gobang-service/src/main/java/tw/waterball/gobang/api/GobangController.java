@@ -8,6 +8,7 @@ import tw.waterball.gobang.services.dto.GobangDTO;
 @RequestMapping("/api/games")
 @RestController
 public class GobangController {
+    public final static int DEFAULT_BOARD_SIZE = 15;
     private GobangService gobangService;
 
     @Autowired
@@ -15,10 +16,9 @@ public class GobangController {
         this.gobangService = gobangService;
     }
 
-
     @PostMapping
     public CreateGameResponse createGame() {
-        int gameId = gobangService.createGameAndGetId();
+        int gameId = gobangService.createGameAndGetId(DEFAULT_BOARD_SIZE);
         return new CreateGameResponse(gameId,  "/api/games/" + gameId);
     }
 

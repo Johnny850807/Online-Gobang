@@ -10,10 +10,10 @@ public class GameRecord {
     private Integer id;
 
     @PositiveOrZero
-    private int row;
+    private int placeRow;
 
     @PositiveOrZero
-    private int col;
+    private int placeCol;
 
     @Enumerated(EnumType.STRING)
     private Team team = Team.NONE;
@@ -24,9 +24,9 @@ public class GameRecord {
     public GameRecord() {
     }
 
-    public GameRecord(int row, int col, Team team) {
-        this.row = row;
-        this.col = col;
+    public GameRecord(int placeRow, int placeCol, Team team) {
+        this.placeRow = placeRow;
+        this.placeCol = placeCol;
         this.team = team;
     }
 
@@ -46,20 +46,20 @@ public class GameRecord {
         this.id = id;
     }
 
-    public int getRow() {
-        return row;
+    public int getPlaceRow() {
+        return placeRow;
     }
 
-    public void setRow(int row) {
-        this.row = row;
+    public void setPlaceRow(int row) {
+        this.placeRow = row;
     }
 
-    public int getCol() {
-        return col;
+    public int getPlaceCol() {
+        return placeCol;
     }
 
-    public void setCol(int col) {
-        this.col = col;
+    public void setPlaceCol(int col) {
+        this.placeCol = col;
     }
 
     public Team getTeam() {

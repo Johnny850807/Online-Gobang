@@ -8,7 +8,6 @@ import tw.waterball.gobang.NotYourTurnException;
 import tw.waterball.gobang.Tile;
 import tw.waterball.gobang.model.Game;
 import tw.waterball.gobang.model.GameRecord;
-import tw.waterball.gobang.model.Team;
 import tw.waterball.gobang.model.repositories.GameRepository;
 import tw.waterball.gobang.services.dto.Converts;
 import tw.waterball.gobang.services.dto.GobangDTO;
@@ -31,8 +30,9 @@ public class DefaultGobangService implements GobangService {
     }
 
     @Override
-    public int createGameAndGetId() {
+    public int createGameAndGetId(int defaultBoardSize) {
         Game game = new Game();
+        game.setSize(defaultBoardSize);
         game.setP1Token(UUID.randomUUID().toString());
         return gameRepository.save(game).getId();
     }
