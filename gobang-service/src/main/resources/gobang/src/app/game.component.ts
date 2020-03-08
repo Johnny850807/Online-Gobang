@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Game, GobangService} from './gobang-service';
 
 @Component({
   selector: 'app-game',
@@ -7,10 +8,6 @@ import {Component, OnInit} from '@angular/core';
 })
 export class GameComponent implements OnInit {
 
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
 }

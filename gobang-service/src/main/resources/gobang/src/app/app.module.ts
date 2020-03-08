@@ -6,9 +6,13 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {GameComponent} from './game.component';
 import {HomeComponent} from './home.component';
-import { StatusMessageComponent } from './status-message.component';
-import { ChessBoardComponent } from './chess-board/chess-board.component';
-import { ShareTheLinkComponent } from './share-the-link/share-the-link.component';
+import {StatusMessageComponent} from './status-message.component';
+import {ChessBoardComponent} from './chess-board/chess-board.component';
+import {ShareTheLinkComponent} from './share-the-link/share-the-link.component';
+import {HttpClientModule} from '@angular/common/http';
+import {GobangService, StubGobangService} from './gobang-service';
+import {BoardService} from './board-service';
+
 
 @NgModule({
   declarations: [
@@ -21,15 +25,14 @@ import { ShareTheLinkComponent } from './share-the-link/share-the-link.component
   ],
   imports: [
     NgbModule,
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [
+    {provide: GobangService, useClass: StubGobangService},
+    {provide: BoardService, useClass: BoardService}],
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  v() {
-    console.log(Array.from(Array(5).keys()));
-  }
-
 }

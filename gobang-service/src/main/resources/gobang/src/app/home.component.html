@@ -14,7 +14,8 @@
       </div>
       <div class="row w-100 no-gutters">
         <div class="col d-flex justify-content-center">
-          <button type="button" routerLink="game"
+          <button type="button"
+                  (click)="connectToGame()"
                   class="btn major-dark-btn" [style.margin-top]="'20px'">
             Create Game
           </button>
