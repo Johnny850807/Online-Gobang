@@ -1,7 +1,17 @@
 import {Component, OnInit} from '@angular/core';
-import {GobangService} from '../gobang-service';
+import {Game, GobangService} from '../gobang-service';
 import {BoardService} from '../board-service';
-import {GameRecord, Team} from "../models";
+import {GameRecord, Team} from '../models';
+
+class Position {
+  constructor(public x: number,
+              public y: number) {
+  }
+
+  equals(pos: Position): boolean {
+    return pos && this.x === pos.x && this.y === pos.y;
+  }
+}
 
 @Component({
   selector: 'app-chess-board',
@@ -15,36 +25,61 @@ export class ChessBoardComponent implements OnInit {
   public readonly w = 37;
   public readonly h = 31;
   public readonly thick = 12;
+  private readonly selectImg: HTMLImageElement;
+  private readonly chessBoardImg: HTMLImageElement;
+  private canvas: HTMLCanvasElement;
+  private latestMousePosition: Position;
+  private gameRecords: GameRecord[];
 
   constructor(private gobangService: GobangService,
               private boardService: BoardService) {
     this.boardService.initBoard(this.size);
+    this.selectImg = new Image();
+    this.selectImg.src = 'assets/img/selected.png';
+    this.chessBoardImg = new Image();
+    this.chessBoardImg.src = 'assets/img/chessBoard.svg';
+  }
+
+  private static roundPosition(pos: Position): Position {
+    return new Position(Math.floor(pos.x), Math.floor(pos.y));
   }
 
   ngOnInit(): void {
+    this.gameRecords = [];
+    this.canvas = document.getElementById('chess-board') as HTMLCanvasElement;
     this.initCanvas();
     this.gobangService.listenToGame()
-      .forEach(gameRecord => this.renderGameRecord(gameRecord));
+      .forEach(gameRecord => this.appendNewGameRecord(gameRecord));
+    this.repaint();
+  }
+
+  private appendNewGameRecord(gameRecord: GameRecord) {
+    this.gameRecords.push(gameRecord);
+    this.repaint();
   }
 
   private initCanvas() {
-    const canvas = document.getElementById('chess-board') as HTMLCanvasElement;
-    const context = canvas.getContext('2d');
-    const chessBoardImg = new Image();
-    chessBoardImg.src = 'assets/img/chessBoard.svg';
-    chessBoardImg.onload = () => {
-      context.drawImage(chessBoardImg, 0, 0, canvas.width, canvas.height);
+    this.canvas.onmousemove = (e) => {
+      const pos = this.getMousePositionRelativelyToBoard(e.clientX, e.clientY);
+      if (!pos.equals(this.latestMousePosition)) {
+        this.latestMousePosition = pos;
+        this.repaint();
+      }
     };
-    canvas.onclick = (e) => {
-      const canvasRect = canvas.getBoundingClientRect();
-      const clickX = e.clientX - canvasRect.x;
-      const clickY = e.clientY - canvasRect.y;
-      console.log(`Click at (${clickY}, ${clickX})`);
-      const row = Math.floor((clickY - this.dy) / this.h);
-      const col = Math.floor((clickX - this.dx) / this.w);
-      this.gobangService.putChess(row, col)
+    this.canvas.onclick = (e) => {
+      const pos = this.getMousePositionRelativelyToBoard(e.clientX, e.clientY);
+      this.gobangService.putChess(pos.y, pos.x)
         .subscribe(() => console.log('The chess has been put.'));
     };
+  }
+
+  private getMousePositionRelativelyToBoard(clientMouseX: number, clientMouseY: number): Position {
+    const canvasRect = this.canvas.getBoundingClientRect();
+    const clickX = clientMouseX - canvasRect.x;
+    const clickY = clientMouseY - canvasRect.y;
+    const pos = this.convertPixelToPos(clickX, clickY);
+    console.log(`Convert mouse pos at (${clickY}, ${clickX}) to (${pos.y}, ${pos.x})`);
+    return pos;
   }
 
   // Used for testing if the chess's position calculation is correct
@@ -56,19 +91,41 @@ export class ChessBoardComponent implements OnInit {
     }
   }
 
-  private renderGameRecord(gameRecord: GameRecord) {
-    const chessColor = gameRecord.team === Team.WHITE ? '#ffffff' : '#000000';
-    this.drawCircle(chessColor, gameRecord.row, gameRecord.col);
-  }
-
   private drawCircle(chessColor: string, row: number, col: number): void {
     const canvas = document.getElementById('chess-board') as HTMLCanvasElement;
     const context = canvas.getContext('2d');
     context.fillStyle = chessColor;
     context.beginPath();
-    context.arc(this.dx + col * (this.w + this.thick), this.dy + row * (this.h + this.thick),
-      11, 0, 2 * Math.PI, true);
+    const pixel = this.convertPosToPixel(col, row);
+    context.arc(pixel.x, pixel.y, 11, 0, 2 * Math.PI, true);
     context.closePath();
     context.fill();
   }
+
+  private convertPosToPixel(x: number, y: number): Position {
+    return new Position(this.dx + x * (this.w + this.thick),
+      this.dy + y * (this.h + this.thick));
+  }
+
+  private convertPixelToPos(x: number, y: number): Position {
+    const row = Math.floor((y - this.dy) / this.h);
+    const col = Math.floor((x - this.dx) / this.w);
+    return new Position(col, row);
+  }
+
+  private repaint() {
+    const context = this.canvas.getContext('2d');
+    context.drawImage(this.chessBoardImg, 0, 0, this.canvas.width, this.canvas.height);
+
+    const pixel = this.convertPosToPixel(this.latestMousePosition.x, this.latestMousePosition.y);
+    context.drawImage(this.selectImg, pixel.x - this.w / 2, pixel.y - this.h / 2);
+
+    this.gameRecords.forEach(gameRecord => this.renderGameRecord(gameRecord));
+  }
+
+  private renderGameRecord(gameRecord: GameRecord) {
+    const chessColor = gameRecord.team === Team.WHITE ? '#ffffff' : '#000000';
+    this.drawCircle(chessColor, gameRecord.row, gameRecord.col);
+  }
+
 }
