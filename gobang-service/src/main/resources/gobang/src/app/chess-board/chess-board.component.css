@@ -1,0 +1,9 @@
+:root {
+  --bowl-height: 144px;
+}
+
+.chess-bowl {
+  margin-right: 20px;
+  margin-left: 20px;
+  height: var(--bowl-height);
+}

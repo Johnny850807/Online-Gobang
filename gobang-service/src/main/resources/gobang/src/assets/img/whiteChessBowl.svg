@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="232" height="233" viewBox="0 0 232 233">
+  <g id="组_6" transform="translate(0.273 0.19)">
+    <g id="组_4" transform="translate(0 -0.19)">
+      <ellipse id="椭圆_1" cx="116" cy="116.5" rx="116" ry="116.5" transform="translate(-0.273)" fill="#a06c30"/>
+      <ellipse id="椭圆_2" cx="87.5" cy="88" rx="87.5" ry="88" transform="translate(27.727 28)" fill="#8a5023"/>
+    </g>
+    <ellipse id="椭圆_3"  cx="19.5" cy="21" rx="19.5" ry="21" transform="translate(43.727 105.81)" fill="#f7f7f7"/>
+    <ellipse id="椭圆_6"  cx="19.5" cy="20.5" rx="19.5" ry="20.5" transform="translate(142.727 116.81)" fill="#cba870"/>
+    <circle id="椭圆_7" cx="20.5" cy="20.5" r="20.5" transform="translate(82.727 140.81)" fill="#cba870"/>
+    <ellipse id="椭圆_5"  cx="20.5" cy="20" rx="20.5" ry="20" transform="translate(74.727 61.81)" fill="#f7f7f7"/>
+    <ellipse id="椭圆_4"  cx="19.5" cy="20.5" rx="19.5" ry="20.5" transform="translate(142.727 80.81)" fill="#f7f7f7"/>
+    <ellipse id="椭圆_8"  cx="20.5" cy="21" rx="20.5" ry="21" transform="translate(111.727 121.81)" fill="#f7f7f7"/>
+  </g>
+</svg>

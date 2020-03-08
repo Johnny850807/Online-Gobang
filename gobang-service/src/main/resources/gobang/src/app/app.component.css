@@ -1,70 +1,20 @@
-.container-fluid {
-  background-color: #EFD6A5;
-}
-
-.major-dark {
-  background-color: #946A54;
-}
 
 .major-dark-btn {
   color: white;
   padding: 10px 15px 10px 15px;
-  margin-top: 30px;
   border-radius: 20px;
-  background-color: #946A54;
+  background-color: var(--primary-dark-grown);
 }
 
 .major-dark-btn:hover {
-  background-color: #845c47;
-}
-
-#overflow-container {
-  position: relative;
-  padding-bottom: 31%;
+  background-color: var(--primary-darker-grown);
 }
 
 
-.hollow-text {
-  color: #EFD6A5;
-  text-shadow: 4px 0 0 #9D7159, -4px 0 0 #9D7159, 0 4px 0 #9D7159, 0 -4px 0 #9D7159, 3px 3px #9D7159, -3px -3px 0 #9D7159, 3px -3px 0 #9D7159, -3px 3px 0 #9D7159;
+.major-dark {
+  background-color: var(--primary-dark-grown);
 }
 
-#overflow-container h1 {
-  font-size: 12vw;
-  font-family: arial-rounded-mt, serif;
-  font-weight: bold;
-  font-stretch: expanded;
-}
-
-@media only screen and (max-width: 1000px) {
-  #overflow-container {
-    padding-bottom: 50%;
-  }
-}
-
-@media only screen and (max-width: 950px) {
-  #overflow-container h1 {
-    font-size: 120px;
-  }
-}
-
-@media only screen and (max-width: 700px) {
-  #overflow-container h1 {
-    font-size: 110px;
-  }
-  #overflow-container {
-    padding-bottom: 60%;
-  }
-}
-
-#middle-panel {
-  width: 100%;
-  position: absolute;
-  top: 12%;
-}
-
-#chess-board-img {
-  width: 45%;
-  min-width: 400px;
-  max-width: 700px;
+.major-dark-font {
+  color: var(--primary-dark-grown);
 }

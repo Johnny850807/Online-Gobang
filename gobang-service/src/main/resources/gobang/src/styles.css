@@ -2,6 +2,12 @@ html, body {
   height: 100%;
 }
 
+:root {
+  --primary-light-grown: #EFD6A5;
+  --primary-dark-grown: #9D7159;
+  --primary-darker-grown: #845c47;
+}
+
 @font-face {
   font-family: arial-rounded-mt;
   src: url(/assets/font/arial-rounded-mt.ttf);

@@ -1,0 +1,57 @@
+.container-fluid {
+  background-color: var(--primary-light-grown);
+}
+
+
+#overflow-container {
+  position: relative;
+  padding-bottom: 31%;
+}
+
+.hollow-text {
+  color: var(--primary-light-grown);
+  text-shadow: 4px 0 0 var(--primary-dark-grown), 
+  -4px 0 0 var(--primary-dark-grown), 0 4px 0 var(--primary-dark-grown), 
+  0 -4px 0 var(--primary-dark-grown), 3px 3px var(--primary-dark-grown), 
+  -3px -3px 0 var(--primary-dark-grown), 3px -3px 0 var(--primary-dark-grown), -3px 3px 0 var(--primary-dark-grown);
+}
+
+#overflow-container h1 {
+  font-size: 12vw;
+  font-family: arial-rounded-mt, serif;
+  font-weight: bold;
+  font-stretch: expanded;
+}
+
+@media all and (max-width: 1000px) {
+  #overflow-container {
+    padding-bottom: 50%;
+  }
+}
+
+@media all  and (max-width: 950px) {
+  #overflow-container h1 {
+    font-size: 120px;
+  }
+}
+
+@media all and (max-width: 700px) {
+  #overflow-container h1 {
+    font-size: 110px;
+  }
+  #overflow-container {
+    padding-bottom: 60%;
+  }
+}
+
+#middle-panel {
+  width: 100%;
+  position: absolute;
+  top: 12%;
+}
+
+#chess-board-img {
+  width: 45%;
+  min-width: 400px;
+  max-width: 700px;
+}

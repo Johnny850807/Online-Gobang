@@ -1,15 +1,23 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { GameComponent } from './game-component/game.component';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {GameComponent} from './game.component';
+import {HomeComponent} from './home.component';
+import { StatusMessageComponent } from './status-message.component';
+import { ChessBoardComponent } from './chess-board/chess-board.component';
+import { ShareTheLinkComponent } from './share-the-link/share-the-link.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    GameComponent
+    GameComponent,
+    HomeComponent,
+    StatusMessageComponent,
+    ChessBoardComponent,
+    ShareTheLinkComponent
   ],
   imports: [
     NgbModule,
@@ -19,4 +27,9 @@ import { GameComponent } from './game-component/game.component';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  v() {
+    console.log(Array.from(Array(5).keys()));
+  }
+
+}
