@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Game, GobangService} from '../gobang-service';
 import {BoardService} from '../board-service';
 import {GameRecord, Team} from '../models';
+import {Howl} from 'howler';
 
 class Position {
   constructor(public x: number,
@@ -30,6 +31,7 @@ export class ChessBoardComponent implements OnInit {
   private canvas: HTMLCanvasElement;
   private latestMousePosition: Position;
   private gameRecords: GameRecord[];
+  private putChessSound: HTMLMediaElement;
 
   constructor(private gobangService: GobangService,
               private boardService: BoardService) {
@@ -38,6 +40,7 @@ export class ChessBoardComponent implements OnInit {
     this.selectImg.src = 'assets/img/selected.png';
     this.chessBoardImg = new Image();
     this.chessBoardImg.src = 'assets/img/chessBoard.svg';
+    this.putChessSound = new Howl({src: ['assets/sound/putChess.mp3']});
   }
 
   private static roundPosition(pos: Position): Position {
@@ -56,6 +59,7 @@ export class ChessBoardComponent implements OnInit {
   private appendNewGameRecord(gameRecord: GameRecord) {
     this.gameRecords.push(gameRecord);
     this.repaint();
+    this.onNewChessPut();
   }
 
   private initCanvas() {
@@ -69,8 +73,14 @@ export class ChessBoardComponent implements OnInit {
     this.canvas.onclick = (e) => {
       const pos = this.getMousePositionRelativelyToBoard(e.clientX, e.clientY);
       this.gobangService.putChess(pos.y, pos.x)
-        .subscribe(() => console.log('The chess has been put.'));
+        .subscribe(() => {
+          console.log('The chess has been put.');
+        });
     };
+  }
+
+  private onNewChessPut() {
+    this.putChessSound.play();
   }
 
   private getMousePositionRelativelyToBoard(clientMouseX: number, clientMouseY: number): Position {

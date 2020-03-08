@@ -28,7 +28,7 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": [
-
+              "node_modules/howler/dist/howler.min.js"
             ]
           },
           "configurations": {
