@@ -29,7 +29,7 @@ export class ChessBoardComponent implements OnInit {
   private readonly selectImg: HTMLImageElement;
   private readonly chessBoardImg: HTMLImageElement;
   private canvas: HTMLCanvasElement;
-  private latestMousePosition: Position;
+  private latestMousePos: Position;
   private gameRecords: GameRecord[];
   private putChessSound: HTMLMediaElement;
 
@@ -64,9 +64,10 @@ export class ChessBoardComponent implements OnInit {
 
   private initCanvas() {
     this.canvas.onmousemove = (e) => {
-      const pos = this.getMousePositionRelativelyToBoard(e.clientX, e.clientY);
-      if (!pos.equals(this.latestMousePosition)) {
-        this.latestMousePosition = pos;
+      let pos = this.getMousePositionRelativelyToBoard(e.clientX, e.clientY);
+      pos = this.adjustPosToBeWithinBoard(pos);
+      if (!pos.equals(this.latestMousePos)) {
+        this.latestMousePos = pos;
         this.repaint();
       }
     };
@@ -88,7 +89,7 @@ export class ChessBoardComponent implements OnInit {
     const clickX = clientMouseX - canvasRect.x;
     const clickY = clientMouseY - canvasRect.y;
     const pos = this.convertPixelToPos(clickX, clickY);
-    console.log(`Convert mouse pos at (${clickY}, ${clickX}) to (${pos.y}, ${pos.x})`);
+    console.log(`Convert mouse pixels at (${clickY}, ${clickX}) to position (${pos.y}, ${pos.x})`);
     return pos;
   }
 
@@ -112,6 +113,14 @@ export class ChessBoardComponent implements OnInit {
     context.fill();
   }
 
+  private adjustPosToBeWithinBoard(pos: Position): Position {
+    const x = pos.x < 0 ? 0 :
+      pos.x >= this.size ? this.size - 1 : pos.x;
+    const y = pos.y < 0 ? 0 :
+      pos.y >= this.size ? this.size - 1 : pos.y;
+    return new Position(x, y);
+  }
+
   private convertPosToPixel(x: number, y: number): Position {
     return new Position(this.dx + x * (this.w + this.thick),
       this.dy + y * (this.h + this.thick));
@@ -127,8 +136,8 @@ export class ChessBoardComponent implements OnInit {
     const context = this.canvas.getContext('2d');
     context.drawImage(this.chessBoardImg, 0, 0, this.canvas.width, this.canvas.height);
 
-    if (this.latestMousePosition) {
-      const pixel = this.convertPosToPixel(this.latestMousePosition.x, this.latestMousePosition.y);
+    if (this.latestMousePos) {
+      const pixel = this.convertPosToPixel(this.latestMousePos.x, this.latestMousePos.y);
       context.drawImage(this.selectImg, pixel.x - this.w / 2, pixel.y - this.h / 2);
     }
 
