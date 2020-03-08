@@ -3,10 +3,26 @@
 }
 
 #link {
-  margin-left: 15px;
+  line-height: 20px;
+  font-size: 20px;
+  margin-left: 10px;
 }
 
 #container {
   vertical-align: middle;
   padding: 20px;
+}
+
+#pot{
+  bottom:15%;
+  position:absolute;
+  -webkit-animation:linear infinite alternate;
+  -webkit-animation-name: run;
+  -webkit-animation-duration: 5s;
+}
+
+@-webkit-keyframes run {
+  0% { left: 0;}
+  50%{ left : 100%;}
+  100%{ left: 0;}
 }

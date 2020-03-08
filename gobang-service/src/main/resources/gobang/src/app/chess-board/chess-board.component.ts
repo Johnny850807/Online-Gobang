@@ -127,8 +127,10 @@ export class ChessBoardComponent implements OnInit {
     const context = this.canvas.getContext('2d');
     context.drawImage(this.chessBoardImg, 0, 0, this.canvas.width, this.canvas.height);
 
-    const pixel = this.convertPosToPixel(this.latestMousePosition.x, this.latestMousePosition.y);
-    context.drawImage(this.selectImg, pixel.x - this.w / 2, pixel.y - this.h / 2);
+    if (this.latestMousePosition) {
+      const pixel = this.convertPosToPixel(this.latestMousePosition.x, this.latestMousePosition.y);
+      context.drawImage(this.selectImg, pixel.x - this.w / 2, pixel.y - this.h / 2);
+    }
 
     this.gameRecords.forEach(gameRecord => this.renderGameRecord(gameRecord));
   }
