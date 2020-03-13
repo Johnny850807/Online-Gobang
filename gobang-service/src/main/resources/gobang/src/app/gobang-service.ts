@@ -4,11 +4,23 @@ import {GameRecord, Team} from './models';
 import {BoardService} from './board-service';
 
 export class Game {
+  currentTurn: Team;
+
   constructor(
     public id: number,
     public link: string,
     public team: Team,
     public token: string) {
+  }
+
+  isYourTurn(): boolean {
+    return this.team === this.currentTurn;
+  }
+}
+
+export class NotYourTurnError extends Error {
+  constructor() {
+    super('It\'s not your turn.');
   }
 }
 
@@ -49,9 +61,13 @@ export class StubGobangService implements GobangService {
     const putChessSubject = new Subject<any>();
     // simulate put-chess
     setTimeout(() => {
-      putChessSubject.next();
-      this.gameRecordsSubject.next(new GameRecord(row, col, this.game.team));
-      setTimeout(() => this.gameRecordsSubject.next(this.generateRandomGameRecord()), 1000);
+      if (this.game.isYourTurn()) {
+        putChessSubject.next();
+        this.gameRecordsSubject.next(new GameRecord(row, col, this.game.team));
+        setTimeout(() => this.gameRecordsSubject.next(this.generateRandomGameRecord()), 1000);
+      } else {
+        putChessSubject.error(new NotYourTurnError());
+      }
     }, 400);
     return putChessSubject;
   }

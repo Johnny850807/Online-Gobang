@@ -1,26 +1,50 @@
-.container-fluid {
+
+#container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
   background-color: var(--primary-light-grown);
 }
 
-
 #overflow-container {
+  display: flex;
+  align-items: center;
   position: relative;
   padding-bottom: 31%;
 }
 
 .hollow-text {
   color: var(--primary-light-grown);
-  text-shadow: 4px 0 0 var(--primary-dark-grown), 
-  -4px 0 0 var(--primary-dark-grown), 0 4px 0 var(--primary-dark-grown), 
-  0 -4px 0 var(--primary-dark-grown), 3px 3px var(--primary-dark-grown), 
-  -3px -3px 0 var(--primary-dark-grown), 3px -3px 0 var(--primary-dark-grown), -3px 3px 0 var(--primary-dark-grown);
+  /*The font's stroke's thickness config is hard-coded*/
+  --thick: 5px;  /*Alter this value to adjust the thickness*/
+  text-shadow: var(--thick) 0 0 var(--primary-dark-grown),
+  calc(0px - var(--thick)) 0 0 var(--primary-dark-grown),
+  0 var(--thick) 0 var(--primary-dark-grown),
+  0 calc(0px - var(--thick)) 0 var(--primary-dark-grown),
+  calc(var(--thick) - 1px) calc(var(--thick) - 1px) var(--primary-dark-grown),
+  calc(1px - var(--thick)) calc(1px - var(--thick)) 0 var(--primary-dark-grown),
+  calc(var(--thick) - 1px) calc(1px - var(--thick)) 0 var(--primary-dark-grown),
+  calc(1px - var(--thick)) calc(var(--thick) - 1px) 0 var(--primary-dark-grown);
+  font-weight: bold;
 }
 
 #overflow-container h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 12vw;
   font-family: arial-rounded-mt, serif;
   font-weight: bold;
   font-stretch: expanded;
+}
+
+/*RWD Adjustment*/
+@media all and (max-width: 1600px) {
+  .hollow-text {
+    --thick: 4px;
+  }
 }
 
 @media all and (max-width: 1000px) {
@@ -30,6 +54,9 @@
 }
 
 @media all  and (max-width: 950px) {
+  .hollow-text {
+    --thick: 3px;
+  }
   #overflow-container h1 {
     font-size: 120px;
   }
@@ -44,10 +71,15 @@
   }
 }
 
+/*This panel is absolutely overlapping on the GOBANG title*/
 #middle-panel {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
   width: 100%;
   position: absolute;
-  top: 12%;
+  top: 15%; /*Determine how much it overlaps with the GOBANG title*/
 }
 
 #chess-board-img {
