@@ -1,7 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {GobangService} from './gobang-service';
-
-enum Status { WAITING, GAME_STARTED}
+import {GobangService, NotYourTurnError} from './gobang-service';
 
 @Component({
   selector: 'app-status-message',
@@ -17,17 +15,27 @@ enum Status { WAITING, GAME_STARTED}
   `]
 })
 export class StatusMessageComponent implements OnInit {
-  @Input() status: Status = Status.WAITING;
-  isMyTurn = false;
+  static WAITING = 'Wait for another player ...';
+  static NOT_YOUR_TURN = 'Not your turn!';
+  static ITS_YOUR_TURN = 'It\'s your turn';
+
+  message = StatusMessageComponent.WAITING;
 
   constructor(private gobangService: GobangService) {
   }
 
   ngOnInit(): void {
-  }
+    console.log(`[StatusMessageComponent]: ngOnInit`);
+    this.gobangService.errorSubject.forEach(err => {
+      if (err instanceof NotYourTurnError) {
+        this.message = StatusMessageComponent.NOT_YOUR_TURN;
+      }
+    });
 
-  get message(): string {
-    return this.status === Status.WAITING ? 'Wait for another player ...' :
-      this.isMyTurn ? 'It\'s your turn' : 'Wait for another player\'s action ...';
+    this.gobangService.gameMovesSubject.forEach(r => {
+      if (this.gobangService.game.isYourTurn()) {
+        this.message = StatusMessageComponent.ITS_YOUR_TURN;
+      }
+    });
   }
 }

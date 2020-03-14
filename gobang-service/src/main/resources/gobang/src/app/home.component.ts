@@ -17,10 +17,9 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  connectToGame() {
-    console.log('Connecting to game...');
+  createGame() {
     this.gobangService.createGame()
-      .forEach(game => {
+      .subscribe(game => {
           console.log('Routing to the game page.');
           this.router.navigateByUrl(`game/${game.id}`);
         }

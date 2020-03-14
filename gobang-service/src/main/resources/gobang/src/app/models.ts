@@ -1,6 +1,18 @@
 export enum Team {NONE, BLACK, WHITE}
 
-export class GameRecord {
+export function oppositeTeam(team: any) {
+  switch (team) {
+    case Team.BLACK:
+      return Team.WHITE;
+    case Team.WHITE:
+      return Team.BLACK;
+    default:
+      return team;
+  }
+}
+
+
+export class GameMoves {
   constructor(
     public row: number,
     public col: number,
@@ -29,7 +41,7 @@ export class Board {
   }
 
   set(row: number, col: number, team: Team) {
-    this.tiles[row][col].team = team;
+    this.tiles[row][col].yourTeam = team;
   }
 
   get(row: number, col: number): Tile {

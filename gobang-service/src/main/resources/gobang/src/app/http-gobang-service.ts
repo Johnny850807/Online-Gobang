@@ -1,7 +1,7 @@
 import {Game, GobangService} from './gobang-service';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {GameRecord} from './models';
+import {GameMoves} from './models';
 import {RxStomp, RxStompConfig} from '@stomp/rx-stomp';
 
 export class HttpGobangService implements GobangService {
@@ -16,7 +16,7 @@ export class HttpGobangService implements GobangService {
   }
 
 
-  listenToGame(): Observable<GameRecord> {
+  listenToGame(): Observable<GameMoves> {
     const config = new RxStompConfig();
     config.brokerURL = '';
     config.reconnectDelay = 200;

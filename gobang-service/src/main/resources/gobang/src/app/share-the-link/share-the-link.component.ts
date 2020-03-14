@@ -6,12 +6,11 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['../app.component.css', './share-the-link.component.css']
 })
 export class ShareTheLinkComponent implements OnInit {
-  @Input() link: string;
-
-  constructor() {
-  }
+  link: string;
 
   ngOnInit(): void {
+    console.log(`[ShareTheLinkComponent]: ngOnInit`);
+    this.link = window.location.href;
   }
 
 }
