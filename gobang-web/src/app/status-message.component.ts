@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {GameNotStartedError, GobangService, NotYourTurnError} from './gobang-service';
+import {GameNotStartedError, GameOverError, GobangService, NotYourTurnError} from './gobang-service';
 
 @Component({
   selector: 'app-status-message',
@@ -43,6 +43,10 @@ export class StatusMessageComponent implements OnInit {
       if (this.gobangService.game.isYourTurn()) {
         this.message = StatusMessageComponent.ITS_YOUR_TURN;
       }
+    });
+
+    this.gobangService.gameOverObservable.subscribe(winner => {
+      this.message = `The game is over! The winner is ${winner}`;
     });
   }
 }

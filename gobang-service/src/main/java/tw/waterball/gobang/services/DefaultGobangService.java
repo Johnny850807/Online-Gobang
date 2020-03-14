@@ -47,7 +47,7 @@ public class DefaultGobangService implements GobangService {
     }
 
     @Override
-    public GobangStatusDTO putChess(int gameId, ChessPlacement placement, String token)
+    public PutChessResponse putChess(int gameId, ChessPlacement placement, String token)
             throws NotYourTurnException, GameOverException, TokenInvalidException {
         GobangGame gobangGame = findGameOrThrow(gameId);
         Gobang gobang = gobangGame.applyGameRecordsAndGetGobang();
@@ -61,11 +61,12 @@ public class DefaultGobangService implements GobangService {
         gobangGame.addGameMove(new GameMove(placement.getRow(), placement.getCol(), color));
         gameRepository.save(gobangGame);
 
+        GameMoveDTO newMove = new GameMoveDTO(placement.getRow(), placement.getCol(), color);
         // notify that the game is over
         if (gobang.isGameOver()) {
-            return new GobangStatusDTO(gobang.getTurn(), gobang.getWinner());
+            return new PutChessResponse(newMove, gobang.getTurn(), gobang.getWinner());
         }
-        return new GobangStatusDTO(gobang.getTurn(), gobang.getWinner());
+        return new PutChessResponse(newMove, gobang.getTurn(), gobang.getWinner());
     }
 
     private Tile.Color validateTokenAndGetColor(GobangGame gobangGame, Gobang gobang, String token) {

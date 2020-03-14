@@ -2,61 +2,54 @@ package tw.waterball.gobang.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
-import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import tw.waterball.gobang.GameOverException;
 import tw.waterball.gobang.NotYourTurnException;
 import tw.waterball.gobang.Tile;
 import tw.waterball.gobang.services.GobangService;
 import tw.waterball.gobang.services.dto.ChessPlacement;
-import tw.waterball.gobang.services.dto.GobangStatusDTO;
+import tw.waterball.gobang.services.dto.GameMoveDTO;
+import tw.waterball.gobang.services.dto.PutChessResponse;
 import tw.waterball.gobang.services.exceptions.TokenInvalidException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class GobangController {
     private GobangService gobangService;
+    private SimpMessagingTemplate simpMessaging;
+
+    private final static Map<Class<? extends Exception>, Integer> errNoMap = new HashMap<>();
+
+    static {
+        errNoMap.put(NotYourTurnException.class, 4000);
+        errNoMap.put(GameOverException.class, 4001);
+        errNoMap.put(TokenInvalidException.class, 4002);
+    }
 
     @Autowired
-    public GobangController(GobangService gobangService) {
+    public GobangController(GobangService gobangService, SimpMessagingTemplate simpMessaging) {
         this.gobangService = gobangService;
+        this.simpMessaging = simpMessaging;
     }
 
     @MessageMapping("/games/{gameId}/putChess")
-    @SendTo("/topic/games/{gameId}/newChess")
-    public NewGameStatus putChess(@DestinationVariable int gameId, @Payload PutChessRequest request) {
-        GobangStatusDTO status = gobangService.putChess(gameId, request.chessPlacement, request.token);
-        return new NewGameStatus(request.chessPlacement, status.currentTurn, status.winner);
+    public void putChess(@DestinationVariable int gameId, @Payload PutChessRequest request) {
+        try {
+            PutChessResponse response = gobangService.putChess(gameId, request.chessPlacement, request.token);
+            simpMessaging.convertAndSend(String.format("/topic/games/%d/newChess", gameId), response);
+        } catch (NotYourTurnException | GameOverException err) {
+            String destination = String.format("/queue/%d/%s/error", gameId, request.token);
+            simpMessaging.convertAndSend(destination,
+                    new ErrorMessage(errNoMap.get(err.getClass()), err.getMessage()));
+        } catch (TokenInvalidException ignored) { }
     }
-
-    @MessageExceptionHandler
-    @SendToUser("/queue/error")
-    public ErrorMessage handleException(Exception err) {
-        if (err instanceof NotYourTurnException) {
-            return new ErrorMessage(4000, err.getMessage());
-        } else if (err instanceof GameOverException) {
-            return new ErrorMessage(4001, err.getMessage());
-        } else if (err instanceof TokenInvalidException) {
-            return new ErrorMessage(4002, err.getMessage());
-        }
-        throw new IllegalStateException("The case for the exception is not handled.", err);
-    }
-
 
     public static class PutChessRequest {
         public String token;
         public ChessPlacement chessPlacement;
-    }
-
-    public static class NewGameStatus {
-        public ChessPlacement newMove;
-        public Tile.Color currentTurn;
-        public Tile.Color winner;
-
-        public NewGameStatus(ChessPlacement newMove, Tile.Color currentTurn, Tile.Color winner) {
-            this.newMove = newMove;
-            this.currentTurn = currentTurn;
-            this.winner = winner;
-        }
     }
 
     public static class ErrorMessage {

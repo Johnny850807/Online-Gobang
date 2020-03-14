@@ -13,10 +13,11 @@ export class HttpGobangService implements GobangService {
   game: Game;
   isHost = false;
   rxStomp: RxStomp = new RxStomp();
-  errorSubject: Subject<Error>;
-  gameMovesSubject: Subject<GameMove>;
-  gameStartedSubject: Subject<any>;
-  putChessSubject: Subject<any>;
+  private errorSubject: Subject<Error>;
+  private gameMovesSubject: Subject<GameMove>;
+  private gameStartedSubject: Subject<any>;
+  private putChessSubject: Subject<any>;
+  private gameOverSubject: Subject<Team>;
 
   constructor(private http: HttpClient) {
     this.initSubjects();
@@ -26,6 +27,7 @@ export class HttpGobangService implements GobangService {
     this.gameMovesSubject = new Subject<GameMove>();
     this.putChessSubject = new ReplaySubject<any>(1);
     this.gameStartedSubject = new ReplaySubject<any>(1);
+    this.gameOverSubject = new Subject<Team>();
     this.composeErrorSubject(this.gameMovesSubject, this.gameStartedSubject, this.putChessSubject);
   }
 
@@ -90,9 +92,10 @@ export class HttpGobangService implements GobangService {
         this.gameStartedSubject.complete();
       });
 
-    this.rxStomp.watch('/queue/error')
+    this.rxStomp.watch(`/queue/${this.game.id}/${this.game.token}/error`)
       .subscribe(resp => {
-        const errNo = resp['errNo'];
+        const body = JSON.parse(resp.body);
+        const errNo = body['errNo'];
         switch (errNo) {
           case 4000:
             this.putChessSubject.error(new NotYourTurnError());
@@ -110,15 +113,14 @@ export class HttpGobangService implements GobangService {
       .subscribe(resp => {
         const body = JSON.parse(resp.body);
         const winner = body['winner'] as Team;
-        if (winner === Team.NONE) {
-          const newMove = new GameMove(body['newMove']['row'], body['newMove']['col'], body['currentTurn'] as Team);
-          this.gameMovesSubject.next(newMove);
-          if (newMove.team === this.game.yourTeam) {
-            this.putChessSubject.next();
-            this.putChessSubject.complete();
-          }
-        } else {
-          // TODO Game over, notify
+        const newMove = new GameMove(body['newMove']['row'], body['newMove']['col'], body['newMove']['color'] as Team);
+        this.gameMovesSubject.next(newMove);
+        if (newMove.team === this.game.yourTeam) {
+          this.putChessSubject.next();
+          this.putChessSubject.complete();
+        }
+        if (winner !== Team.NONE) {
+          this.gameOver(winner);
         }
       });
   }
@@ -132,6 +134,11 @@ export class HttpGobangService implements GobangService {
       })
     });
     return this.putChessSubject;
+  }
+
+  private gameOver(winner: Team) {
+    this.gameOverSubject.next(winner);
+    this.gameOverSubject.complete();
   }
 
   private urlPrefix(path: string): string {
@@ -154,4 +161,7 @@ export class HttpGobangService implements GobangService {
     return this.gameStartedSubject;
   }
 
+  get gameOverObservable(): Observable<Team> {
+    return this.gameOverSubject;
+  }
 }

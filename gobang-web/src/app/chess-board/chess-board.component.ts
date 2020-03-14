@@ -143,12 +143,12 @@ export class ChessBoardComponent implements OnInit {
       context.drawImage(this.selectImg, pixel.x - this.w / 2, pixel.y - this.h / 2);
     }
 
-    this.gameRecords.forEach(gameRecord => this.renderGameRecord(gameRecord));
+    this.gameRecords.forEach(gameMove => this.renderGameRecord(gameMove));
   }
 
-  private renderGameRecord(gameRecord: GameMove) {
-    const chessColor = gameRecord.team === Team.WHITE ? '#ffffff' : '#000000';
-    this.drawCircle(chessColor, gameRecord.row, gameRecord.col);
+  private renderGameRecord(gameMove: GameMove) {
+    const chessColor = gameMove.team === Team.WHITE ? '#ffffff' : '#000000';
+    this.drawCircle(chessColor, gameMove.row, gameMove.col);
   }
 
 }

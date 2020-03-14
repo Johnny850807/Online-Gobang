@@ -57,7 +57,8 @@ export abstract class GobangService {
   gameStartedObservable: Observable<any>;
   gameMovesObservable: Observable<GameMove>;
   errorObservable: Observable<Error>;
-  putChessObservable = new Observable<any>();
+  putChessObservable: Observable<any>;
+  gameOverObservable: Observable<Team>;
 
   abstract createGame(): Observable<Game>;
 
@@ -78,6 +79,7 @@ export class StubGobangService implements GobangService {
   private errorSubject: Subject<Error>;
   private boardService: BoardService;
   private putChessSubject: ReplaySubject<any>;
+  private gameOverSubject: Subject<Team>;
 
   constructor(boardService: BoardService) {
     this.boardService = boardService;
@@ -88,6 +90,7 @@ export class StubGobangService implements GobangService {
     this.gameMovesSubject = new Subject<GameMove>();
     this.gameStartedSubject = new Subject<any>();
     this.putChessSubject = new ReplaySubject<any>(1);
+    this.gameOverSubject = new Subject<Team>();
     this.composeErrorSubject(this.gameMovesSubject, this.gameStartedSubject, this.putChessSubject);
   }
 
@@ -214,6 +217,10 @@ export class StubGobangService implements GobangService {
 
   get putChessObservable(): Observable<any> {
     return this.putChessSubject;
+  }
+
+  get gameOverObservable(): Observable<Team> {
+    return this.gameOverSubject;
   }
 
 }
