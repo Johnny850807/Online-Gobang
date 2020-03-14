@@ -5,7 +5,7 @@ import tw.waterball.gobang.Tile;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +18,8 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @PositiveOrZero
-    private int size;
+    @Positive
+    private int playerCount;
 
     @NotNull // the p1 should exist because one must be a host
     private String p1Token;
@@ -28,10 +28,13 @@ public class Game {
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
     private List<GameRecord> gameRecords = new ArrayList<>();
 
-
     public void addGameRecord(GameRecord record) {
         record.setGame(this);
         gameRecords.add(record);
+    }
+
+    public void setPlayerCount(int playerCount) {
+        this.playerCount = playerCount;
     }
 
     public String getP1Token() {
@@ -56,14 +59,6 @@ public class Game {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
     }
 
     public int getPlayerCount() {

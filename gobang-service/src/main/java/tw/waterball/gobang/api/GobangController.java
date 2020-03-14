@@ -1,39 +1,62 @@
 package tw.waterball.gobang.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
+import tw.waterball.gobang.Tile;
 import tw.waterball.gobang.services.GobangService;
-import tw.waterball.gobang.services.dto.GobangDTO;
+import tw.waterball.gobang.services.dto.ChessPlacement;
+import tw.waterball.gobang.services.dto.GobangStatusDTO;
 
-@RequestMapping("/api/games")
-@RestController
-public class GobangController {
-    public final static int DEFAULT_BOARD_SIZE = 15;
+@Controller
+public class GobangRealTimeController {
     private GobangService gobangService;
 
     @Autowired
-    public GobangController(GobangService gobangService) {
+    public GobangRealTimeController(GobangService gobangService) {
         this.gobangService = gobangService;
     }
 
-    @PostMapping
-    public CreateGameResponse createGame() {
-        int gameId = gobangService.createGameAndGetId(DEFAULT_BOARD_SIZE);
-        return new CreateGameResponse(gameId,  "/api/games/" + gameId);
+    @MessageMapping("/game/{gameId}")
+    @SendTo("/topic/game/{gameId}/newPlayer")
+    public String joinGame(@DestinationVariable int gameId) {
+        if (gobangService.joinGame(gameId)) {
+            return "New player joins.";
+        }
+        return "The game is full of player.";
     }
 
-    public static class CreateGameResponse {
-        public int gameId;
-        public String gameUrl;
+    @MessageMapping("/game/{gameId}/putChess")
+    @SendTo("/topic/game/{gameId}")
+    public PutChessResponse putChess(@DestinationVariable int gameId, @Payload PutChessRequest request) {
+        GobangStatusDTO status = gobangService.putChess(gameId, request.chessPlacement, request.token);
+        return new PutChessResponse(request.chessPlacement, status.getWinner());
+    }
 
-        public CreateGameResponse(int gameId, String gameUrl) {
-            this.gameId = gameId;
-            this.gameUrl = gameUrl;
+    public static class PutChessRequest {
+        public String token;
+        public ChessPlacement chessPlacement;
+    }
+
+    public static class PutChessResponse {
+        public ChessPlacement newStep;
+        public Tile.Color winner;
+        public PutChessResponse(ChessPlacement newStep, Tile.Color winner) {
+            this.newStep = newStep;
+            this.winner = winner;
         }
     }
 
-    @GetMapping("/{gameId}")
-    public GobangDTO syncGameStatus(@PathVariable int gameId) {
-        return gobangService.getGameStatus(gameId);
+    public static class Response<T> {
+        public int event;
+        public T data;
+
+        public Response(int event, T data) {
+            this.event = event;
+            this.data = data;
+        }
     }
 }
