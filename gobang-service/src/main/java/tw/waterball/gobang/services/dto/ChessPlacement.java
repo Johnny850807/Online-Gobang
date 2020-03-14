@@ -1,7 +1,5 @@
 package tw.waterball.gobang.services.dto;
 
-import tw.waterball.gobang.model.Team;
-
 public class ChessPlacement {
     private int row;
     private int col;

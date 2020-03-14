@@ -1,4 +1,4 @@
-export enum Team {NONE, BLACK, WHITE}
+export enum Team {NONE = 'NONE', BLACK = 'BLACK', WHITE = 'WHITE'}
 
 export function oppositeTeam(team: any) {
   switch (team) {

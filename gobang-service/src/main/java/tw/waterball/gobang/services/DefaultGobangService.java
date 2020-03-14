@@ -7,7 +7,7 @@ import tw.waterball.gobang.Gobang;
 import tw.waterball.gobang.NotYourTurnException;
 import tw.waterball.gobang.Tile;
 import tw.waterball.gobang.model.GobangGame;
-import tw.waterball.gobang.model.GameRecord;
+import tw.waterball.gobang.model.GameMove;
 import tw.waterball.gobang.model.repositories.GameRepository;
 import tw.waterball.gobang.services.dto.*;
 import tw.waterball.gobang.services.exceptions.FullPlayersException;
@@ -28,17 +28,19 @@ public class DefaultGobangService implements GobangService {
     }
 
     @Override
-    public int createGameAndGetId(int defaultBoardSize) {
+    public CreateGameResponse createGame(int boardSize) {
         GobangGame gobangGame = new GobangGame();
         gobangGame.setP1Token(UUID.randomUUID().toString());
-        return gameRepository.save(gobangGame).getId();
+        int gameId = gameRepository.save(gobangGame).getId();
+        return new CreateGameResponse(gameId, gobangGame.getP1Token());
     }
 
     @Override
-    public void joinGame(int gameId) {
+    public JoinGameResponse joinGame(int gameId) {
         GobangGame gobangGame = findGameOrThrow(gameId);
         if (gobangGame.getPlayerCount() == 1) {
             gobangGame.setP2Token(UUID.randomUUID().toString());
+            return new JoinGameResponse(gobangGame.getId(), gobangGame.getP2Token());
         } else {
             throw new FullPlayersException(1);
         }
@@ -49,31 +51,39 @@ public class DefaultGobangService implements GobangService {
             throws NotYourTurnException, GameOverException, TokenInvalidException {
         GobangGame gobangGame = findGameOrThrow(gameId);
         Gobang gobang = gobangGame.applyGameRecordsAndGetGobang();
+
+        if (gobang.isGameOver()) {
+            throw new GameOverException();
+        }
+
         Tile.Color color = validateTokenAndGetColor(gobangGame, gobang, token);
         gobang.putChess(placement.getRow(), placement.getCol(), color);
-        gobangGame.addGameRecord(new GameRecord(placement.getRow(),
-                placement.getCol(), Converts.colorToTeam(color)));
+        gobangGame.addGameMove(new GameMove(placement.getRow(), placement.getCol(), color));
         gameRepository.save(gobangGame);
+
+        // notify that the game is over
         if (gobang.isGameOver()) {
-            return new GobangStatusDTO(gobang.getWinner());
+            return new GobangStatusDTO(gobang.getTurn(), gobang.getWinner());
         }
-        return GobangStatusDTO.noWinner();
+        return new GobangStatusDTO(gobang.getTurn(), gobang.getWinner());
     }
 
     private Tile.Color validateTokenAndGetColor(GobangGame gobangGame, Gobang gobang, String token) {
-        if (gobang.getTurn() == GobangGame.P1_COLOR) {
-            validateToken(gobangGame.getP1Token(), token);
-            return GobangGame.P1_COLOR;
+        Tile.Color color = validateTokenAndGetColor(gobangGame, token);
+        if (gobang.getTurn() == color) {
+            return color;
         } else {
-            validateToken(gobangGame.getP2Token(), token);
-            return GobangGame.P2_COLOR;
+            throw new NotYourTurnException(color);
         }
     }
 
-    private void validateToken(String expect, String actual) {
-        if (!expect.equals(actual)) {
-            throw new TokenInvalidException();
+    private Tile.Color validateTokenAndGetColor(GobangGame gobangGame, String token) {
+        if (gobangGame.getP1Token().equals(token)) {
+            return GobangGame.P1_COLOR;
+        } else if (gobangGame.getP2Token().equals(token)) {
+            return GobangGame.P2_COLOR;
         }
+        throw new TokenInvalidException();
     }
 
     @Override

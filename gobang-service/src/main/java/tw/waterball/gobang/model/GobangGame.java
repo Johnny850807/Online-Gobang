@@ -10,8 +10,8 @@ import java.util.List;
 
 @Entity
 public class GobangGame {
-    public final static Tile.Color P1_COLOR = Tile.Color.WHITE;
-    public final static Tile.Color P2_COLOR = Tile.Color.BLACK;
+    public final static Tile.Color P1_COLOR = Tile.Color.BLACK;
+    public final static Tile.Color P2_COLOR = Tile.Color.WHITE;
     public final static int BOARD_SIZE = 15;
 
     @Id
@@ -23,12 +23,12 @@ public class GobangGame {
     private String p1Token;
     private String p2Token;
 
-    @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
-    private List<GameRecord> gameRecords = new ArrayList<>();
+    @OneToMany(mappedBy = "gobangGame", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<GameMove> gameMoves = new ArrayList<>();
 
-    public void addGameRecord(GameRecord record) {
+    public void addGameMove(GameMove record) {
         record.setGobangGame(this);
-        gameRecords.add(record);
+        gameMoves.add(record);
     }
 
     public String getP1Token() {
@@ -59,20 +59,19 @@ public class GobangGame {
         return p2Token == null ? 1 : 2;
     }
 
-    public List<GameRecord> getGameRecords() {
-        return gameRecords;
+    public List<GameMove> getGameMoves() {
+        return gameMoves;
     }
 
-    public void setGameRecords(List<GameRecord> gameRecords) {
-        this.gameRecords = gameRecords;
+    public void setGameMoves(List<GameMove> gameMoves) {
+        this.gameMoves = gameMoves;
     }
 
     public Gobang applyGameRecordsAndGetGobang() {
         Gobang gobang = new Gobang(BOARD_SIZE);
 
-        for (GameRecord gameRecord : gameRecords) {
-            Tile.Color color = gameRecord.getTeam() == Team.BLACK ? Tile.Color.BLACK : Tile.Color.WHITE;
-            gobang.putChess(gameRecord.getPlaceRow(), gameRecord.getPlaceCol(), color);
+        for (GameMove gameMove : gameMoves) {
+            gobang.putChess(gameMove.getPlaceRow(), gameMove.getPlaceCol(), gameMove.getColor());
         }
 
         return gobang;

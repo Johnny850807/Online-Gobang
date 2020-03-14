@@ -1,9 +1,9 @@
 package tw.waterball.gobang;
 
 public class Gobang {
-    private Tile.Color turn;
+    private Tile.Color turn = Tile.Color.BLACK;
     private Board board;
-    private Tile.Color winner;
+    private Tile.Color winner = Tile.Color.NONE;
 
     public Gobang(int size) {
         board = new Board(size);
@@ -33,7 +33,7 @@ public class Gobang {
     }
 
     public boolean isGameOver() {
-        return getWinner() != null;
+        return getWinner() != null && getWinner() != Tile.Color.NONE;
     }
 
     public Tile.Color getTurn() {

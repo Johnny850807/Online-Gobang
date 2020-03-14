@@ -91,7 +91,7 @@ export class ChessBoardComponent implements OnInit {
     const clickX = clientMouseX - canvasRect.x;
     const clickY = clientMouseY - canvasRect.y;
     const pos = this.convertPixelToPos(clickX, clickY);
-    console.log(`Convert mouse pixels at (${clickY}, ${clickX}) to position (${pos.y}, ${pos.x})`);
+    // console.log(`Convert mouse pixels at (${clickY}, ${clickX}) to position (${pos.y}, ${pos.x})`);
     return pos;
   }
 

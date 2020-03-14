@@ -27,6 +27,18 @@ export class Game {
   }
 }
 
+export class TokenInvalidError extends Error {
+  constructor() {
+    super('The token is invalid.');
+  }
+}
+
+export class GameOverError extends Error {
+  constructor() {
+    super('The game has been over.');
+  }
+}
+
 export class GameNotStartedError extends Error {
   constructor() {
     super('The game has not been started.');
@@ -156,6 +168,7 @@ export class StubGobangService implements GobangService {
     this.game.setNextTurn();
     setTimeout(() => {
       this.putChessSubject.next();
+      this.putChessSubject.complete();
       this.gameMovesSubject.next(new GameMove(row, col, this.game.yourTeam));
       this.performAiMove();
     }, 400);

@@ -1,10 +1,12 @@
 package tw.waterball.gobang.model;
 
+import tw.waterball.gobang.Tile;
+
 import javax.persistence.*;
 import javax.validation.constraints.PositiveOrZero;
 
 @Entity
-public class GameRecord {
+public class GameMove {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -16,18 +18,18 @@ public class GameRecord {
     private int placeCol;
 
     @Enumerated(EnumType.STRING)
-    private Team team = Team.NONE;
+    private Tile.Color color = Tile.Color.BLACK;
 
     @ManyToOne
     private GobangGame gobangGame;
 
-    public GameRecord() {
+    public GameMove() {
     }
 
-    public GameRecord(int placeRow, int placeCol, Team team) {
+    public GameMove(int placeRow, int placeCol, Tile.Color color) {
         this.placeRow = placeRow;
         this.placeCol = placeCol;
-        this.team = team;
+        this.color = color;
     }
 
     public GobangGame getGobangGame() {
@@ -62,11 +64,11 @@ public class GameRecord {
         this.placeCol = col;
     }
 
-    public Team getTeam() {
-        return team;
+    public Tile.Color getColor() {
+        return color;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setColor(Tile.Color color) {
+        this.color = color;
     }
 }
