@@ -30,7 +30,6 @@ public class DefaultGobangService implements GobangService {
     @Override
     public int createGameAndGetId(int defaultBoardSize) {
         GobangGame gobangGame = new GobangGame();
-        gobangGame.setSize(defaultBoardSize);
         gobangGame.setP1Token(UUID.randomUUID().toString());
         return gameRepository.save(gobangGame).getId();
     }

@@ -18,19 +18,10 @@ import java.security.Principal;
 @Controller
 public class GobangController {
     private GobangService gobangService;
-    private SimpMessagingTemplate simpMessaging;
 
     @Autowired
-    public GobangController(GobangService gobangService, SimpMessagingTemplate simpMessaging) {
+    public GobangController(GobangService gobangService) {
         this.gobangService = gobangService;
-        this.simpMessaging = simpMessaging;
-    }
-
-    @MessageMapping("/games/{gameId}")
-    @SendTo("topic/games/gameStarted")
-    public String joinGame(@DestinationVariable int gameId) {
-        gobangService.joinGame(gameId);
-        return "";
     }
 
     @MessageMapping("/games/{gameId}/putChess")

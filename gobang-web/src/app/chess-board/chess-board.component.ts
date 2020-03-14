@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Game, GobangService} from '../gobang-service';
 import {BoardService} from '../board-service';
-import {GameMoves, Team} from '../models';
+import {GameMove, Team} from '../models';
 import {Howl} from 'howler';
 
 class Position {
@@ -30,7 +30,7 @@ export class ChessBoardComponent implements OnInit {
   private readonly chessBoardImg: HTMLImageElement;
   private canvas: HTMLCanvasElement;
   private latestMousePos: Position;
-  private gameRecords: GameMoves[];
+  private gameRecords: GameMove[];
   private putChessSound: HTMLMediaElement;
 
   constructor(private gobangService: GobangService,
@@ -52,12 +52,12 @@ export class ChessBoardComponent implements OnInit {
     this.gameRecords = [];
     this.canvas = document.getElementById('chess-board') as HTMLCanvasElement;
     this.initCanvas();
-    this.gobangService.gameMovesSubject
+    this.gobangService.gameMovesObservable
       .forEach(gameRecord => this.appendNewGameRecord(gameRecord));
     this.repaint();
   }
 
-  private appendNewGameRecord(gameRecord: GameMoves) {
+  private appendNewGameRecord(gameRecord: GameMove) {
     this.gameRecords.push(gameRecord);
     this.repaint();
     this.onNewChessPut();
@@ -146,7 +146,7 @@ export class ChessBoardComponent implements OnInit {
     this.gameRecords.forEach(gameRecord => this.renderGameRecord(gameRecord));
   }
 
-  private renderGameRecord(gameRecord: GameMoves) {
+  private renderGameRecord(gameRecord: GameMove) {
     const chessColor = gameRecord.team === Team.WHITE ? '#ffffff' : '#000000';
     this.drawCircle(chessColor, gameRecord.row, gameRecord.col);
   }

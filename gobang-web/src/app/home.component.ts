@@ -15,15 +15,6 @@ export class HomeComponent implements OnInit {
               private router: Router) {
   }
 
-  onResize(event) {
-    // const middlePanel = document.getElementById('middle-panel');
-    // const titleBanner = document.getElementById('title-banner');
-    // const overlappingHeight = 66 + middlePanel.clientHeight; // height Of the title banner overlapping with the middlePanel
-    // const offsetY = document.body.clientHeight / 2 - overlappingHeight / 2;
-    // titleBanner.style.top = `${offsetY}px`;
-    // middlePanel.style.top
-  }
-
   ngOnInit(): void {
   }
 

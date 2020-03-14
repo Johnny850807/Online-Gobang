@@ -12,7 +12,7 @@ export function oppositeTeam(team: any) {
 }
 
 
-export class GameMoves {
+export class GameMove {
   constructor(
     public row: number,
     public col: number,

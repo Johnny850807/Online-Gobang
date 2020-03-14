@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {GameMoves, oppositeTeam, Team} from './models';
+import {BehaviorSubject, Observable, ReplaySubject, Subject} from 'rxjs';
+import {GameMove, oppositeTeam, Team} from './models';
 import {BoardService} from './board-service';
+import get = Reflect.get;
 
 export class Game {
 
@@ -14,6 +15,7 @@ export class Game {
   static p1Team = Team.BLACK;
   static p2Team = Team.WHITE;
   currentTurn: Team = Team.BLACK;
+  started = false;
 
   isYourTurn(): boolean {
     return this.yourTeam === this.currentTurn;
@@ -22,6 +24,12 @@ export class Game {
   setNextTurn() {
     this.currentTurn = this.currentTurn === Team.BLACK ? Team.WHITE : Team.BLACK;
     console.log(`[Game] Set current turn to ${Team[this.currentTurn]}.`);
+  }
+}
+
+export class GameNotStartedError extends Error {
+  constructor() {
+    super('The game has not been started.');
   }
 }
 
@@ -34,8 +42,10 @@ export class NotYourTurnError extends Error {
 @Injectable()
 export abstract class GobangService {
   game: Game;
-  gameMovesSubject: Subject<GameMoves>;
-  errorSubject: Subject<Error>;
+  gameStartedObservable: Observable<any>;
+  gameMovesObservable: Observable<GameMove>;
+  errorObservable: Observable<Error>;
+  putChessObservable = new Observable<any>();
 
   abstract createGame(): Observable<Game>;
 
@@ -51,26 +61,45 @@ export abstract class GobangService {
 })
 export class StubGobangService implements GobangService {
   game: Game;
-  gameMovesSubject = new Subject<GameMoves>();
-  gameStartedSubject = new Subject<any>();
-  errorSubject = new Subject<Error>();
-  private gameSubject: Subject<Game>;
+  private gameMovesSubject: Subject<GameMove>;
+  private gameStartedSubject: Subject<any>;
+  private errorSubject: Subject<Error>;
   private boardService: BoardService;
+  private putChessSubject: ReplaySubject<any>;
 
   constructor(boardService: BoardService) {
     this.boardService = boardService;
+    this.initSubjects();
+  }
+
+  private initSubjects() {
+    this.gameMovesSubject = new Subject<GameMove>();
+    this.gameStartedSubject = new Subject<any>();
+    this.putChessSubject = new ReplaySubject<any>(1);
+    this.composeErrorSubject(this.gameMovesSubject, this.gameStartedSubject, this.putChessSubject);
+  }
+
+  private composeErrorSubject(...subjects: Subject<any>[]) {
+    this.errorSubject = new Subject<Error>();
+    for (const subject of subjects) {
+      subject.subscribe({
+        error: err => {
+          this.errorSubject.next(err);
+        }
+      });
+    }
   }
 
   createGame(): Observable<Game> {
     console.log('Creating the game.');
     this.game = new Game(1, Game.p1Team, 'token');
-    this.gameSubject = new BehaviorSubject<Game>(this.game);
+    const createGameSubject = new BehaviorSubject<Game>(this.game);
     setTimeout(() => {
       console.log('Created the game.');
-      this.gameSubject.next(this.game);
+      createGameSubject.next(this.game);
       this.gameStarted();
     }, 300);
-    return this.gameSubject;
+    return createGameSubject;
   }
 
   joinGame(id: number): Observable<Game> {
@@ -87,6 +116,7 @@ export class StubGobangService implements GobangService {
 
   private gameStarted() {
     console.log('The game is started!');
+    this.game.started = true;
     this.gameStartedSubject.next();
     if (!this.game.isYourTurn()) {
       // The first turn is AI's
@@ -99,25 +129,36 @@ export class StubGobangService implements GobangService {
     this.validateIfGameExists();
     // Do nothing, because this is just a stub.
     console.log('Connected to the server');
+
+    setTimeout(() => {
+      this.gameStartedSubject.next();
+    }, 1500);  // after 1500ms, trigger player joining
   }
 
   putChess(row: number, col: number): Observable<any> {
     console.log(`Putting chess at (${row}, ${col})`);
     this.validateIfGameExists();
-    const putChessSubject = new Subject<any>();
-    // simulate put-chess
-    if (this.game.isYourTurn()) {
-      this.game.setNextTurn();
-      setTimeout(() => {
-        putChessSubject.next();
-        this.gameMovesSubject.next(new GameMoves(row, col, this.game.yourTeam));
-        this.performAiMove();
-      }, 400);
+
+    if (this.game.started) {
+      if (this.game.isYourTurn()) {
+        this.doPutChess(row, col);
+      } else {
+        this.putChessSubject.error(new NotYourTurnError());
+      }
     } else {
-      const err = new NotYourTurnError();
-      this.errorSubject.next(err);
+      this.putChessSubject.error(new GameNotStartedError());
     }
-    return putChessSubject;
+
+    return this.putChessSubject;
+  }
+
+  private doPutChess(row: number, col: number) {
+    this.game.setNextTurn();
+    setTimeout(() => {
+      this.putChessSubject.next();
+      this.gameMovesSubject.next(new GameMove(row, col, this.game.yourTeam));
+      this.performAiMove();
+    }, 400);
   }
 
   private performAiMove() {
@@ -135,7 +176,7 @@ export class StubGobangService implements GobangService {
     }
   }
 
-  private generateRandomGameRecord(team: Team): GameMoves {
+  private generateRandomGameRecord(team: Team): GameMove {
     let row;
     let col;
     do {
@@ -143,9 +184,24 @@ export class StubGobangService implements GobangService {
       col = Math.floor(Math.random() * this.boardService.board.size);
       console.log(`Random game record is generated: (${row}, ${col}).`);
     } while (this.boardService.board.isUsed(row, col));
-    return new GameMoves(row, col, team);
+    return new GameMove(row, col, team);
   }
 
+  get gameStartedObservable(): Observable<any> {
+    return this.gameStartedSubject;
+  }
+
+  get gameMovesObservable(): Observable<GameMove> {
+    return this.gameMovesSubject;
+  }
+
+  get errorObservable(): Observable<Error> {
+    return this.errorSubject;
+  }
+
+  get putChessObservable(): Observable<any> {
+    return this.putChessSubject;
+  }
 
 }
 

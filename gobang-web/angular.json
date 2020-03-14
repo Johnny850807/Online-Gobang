@@ -27,7 +27,8 @@
               "src/styles.css"
             ],
             "scripts": [
-              "node_modules/howler/dist/howler.min.js"
+              "node_modules/howler/dist/howler.min.js",
+              "node_modules/@stomp/rx-stomp/esm6/index.d.ts"
             ]
           },
           "configurations": {

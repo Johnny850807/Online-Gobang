@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {GobangService, NotYourTurnError} from './gobang-service';
+import {GameNotStartedError, GobangService, NotYourTurnError} from './gobang-service';
 
 @Component({
   selector: 'app-status-message',
@@ -16,6 +16,7 @@ import {GobangService, NotYourTurnError} from './gobang-service';
 })
 export class StatusMessageComponent implements OnInit {
   static WAITING = 'Wait for another player ...';
+  static GAME_NOT_STARTED = 'The game has not been started, please wait for the player to join.';
   static NOT_YOUR_TURN = 'Not your turn!';
   static ITS_YOUR_TURN = 'It\'s your turn';
 
@@ -26,13 +27,19 @@ export class StatusMessageComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(`[StatusMessageComponent]: ngOnInit`);
-    this.gobangService.errorSubject.forEach(err => {
-      if (err instanceof NotYourTurnError) {
+    this.gobangService.gameStartedObservable.subscribe(r => {
+      this.message = 'New player joined! Game started.';
+    });
+
+    this.gobangService.errorObservable.subscribe(err => {
+      if (err instanceof GameNotStartedError) {
+        this.message = StatusMessageComponent.GAME_NOT_STARTED;
+      } else if (err instanceof NotYourTurnError) {
         this.message = StatusMessageComponent.NOT_YOUR_TURN;
       }
     });
 
-    this.gobangService.gameMovesSubject.forEach(r => {
+    this.gobangService.gameMovesObservable.subscribe(r => {
       if (this.gobangService.game.isYourTurn()) {
         this.message = StatusMessageComponent.ITS_YOUR_TURN;
       }

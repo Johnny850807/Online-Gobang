@@ -17,7 +17,7 @@
 .hollow-text {
   color: var(--primary-light-grown);
   /*The font's stroke's thickness config is hard-coded*/
-  --thick: 5px;  /*Alter this value to adjust the thickness*/
+  --thick: 6px;  /*Alter this value to adjust the thickness*/
   text-shadow: var(--thick) 0 0 var(--primary-dark-grown),
   calc(0px - var(--thick)) 0 0 var(--primary-dark-grown),
   0 var(--thick) 0 var(--primary-dark-grown),
@@ -67,7 +67,7 @@
 /*RWD Adjustment*/
 @media all and (max-width: 1600px) {
   .hollow-text {
-    --thick: 4px;
+    --thick: 5px;
   }
 }
 
@@ -79,13 +79,7 @@
 
 @media screen  and (max-width: 950px) {
   .hollow-text {
-    --thick: 3px;
-  }
-}
-
-@media screen and (max-width: 700px) {
-  #overflow-container {
-    padding-bottom: 60%;
+    --thick: 4px;
   }
 }
 

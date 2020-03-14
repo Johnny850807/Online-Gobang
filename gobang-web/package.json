@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --outputPath ../public",
+    "build": "ng build --outputPath ../gobang-service/src/main/resources/public",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
