@@ -51,7 +51,7 @@ export class ChessBoardComponent implements OnInit {
     this.gameRecords = [];
     this.canvas = document.getElementById('chess-board') as HTMLCanvasElement;
     this.initCanvas();
-    this.gobangService.listenToGame()
+    this.gobangService.gameRecordsSubject
       .forEach(gameRecord => this.appendNewGameRecord(gameRecord));
     this.repaint();
   }
@@ -81,6 +81,7 @@ export class ChessBoardComponent implements OnInit {
   }
 
   private onNewChessPut() {
+    // noinspection JSIgnoredPromiseFromCall
     this.putChessSound.play();
   }
 

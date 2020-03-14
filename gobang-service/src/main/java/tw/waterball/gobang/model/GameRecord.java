@@ -19,7 +19,7 @@ public class GameRecord {
     private Team team = Team.NONE;
 
     @ManyToOne
-    private Game game;
+    private GobangGame gobangGame;
 
     public GameRecord() {
     }
@@ -30,12 +30,12 @@ public class GameRecord {
         this.team = team;
     }
 
-    public Game getGame() {
-        return game;
+    public GobangGame getGobangGame() {
+        return gobangGame;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGobangGame(GobangGame gobangGame) {
+        this.gobangGame = gobangGame;
     }
 
     public Integer getId() {

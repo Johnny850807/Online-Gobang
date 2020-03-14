@@ -10,9 +10,9 @@ public class Gobang {
     }
 
     public void putChess(int row, int col, Tile.Color color)
-            throws NotYourTurnException, GameIsOverException {
+            throws NotYourTurnException, GameOverException {
         if (isGameOver()) {
-            throw new GameIsOverException();
+            throw new GameOverException();
         }
 
         if (turn != color) {

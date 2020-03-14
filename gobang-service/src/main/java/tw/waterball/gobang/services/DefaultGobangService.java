@@ -2,17 +2,15 @@ package tw.waterball.gobang.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tw.waterball.gobang.GameIsOverException;
+import tw.waterball.gobang.GameOverException;
 import tw.waterball.gobang.Gobang;
 import tw.waterball.gobang.NotYourTurnException;
 import tw.waterball.gobang.Tile;
-import tw.waterball.gobang.model.Game;
+import tw.waterball.gobang.model.GobangGame;
 import tw.waterball.gobang.model.GameRecord;
 import tw.waterball.gobang.model.repositories.GameRepository;
-import tw.waterball.gobang.services.dto.Converts;
-import tw.waterball.gobang.services.dto.GobangDTO;
-import tw.waterball.gobang.services.dto.ChessPlacement;
-import tw.waterball.gobang.services.dto.GobangStatusDTO;
+import tw.waterball.gobang.services.dto.*;
+import tw.waterball.gobang.services.exceptions.FullPlayersException;
 import tw.waterball.gobang.services.exceptions.GameNotFoundException;
 import tw.waterball.gobang.services.exceptions.TokenInvalidException;
 
@@ -31,46 +29,45 @@ public class DefaultGobangService implements GobangService {
 
     @Override
     public int createGameAndGetId(int defaultBoardSize) {
-        Game game = new Game();
-        game.setSize(defaultBoardSize);
-        game.setP1Token(UUID.randomUUID().toString());
-        return gameRepository.save(game).getId();
+        GobangGame gobangGame = new GobangGame();
+        gobangGame.setSize(defaultBoardSize);
+        gobangGame.setP1Token(UUID.randomUUID().toString());
+        return gameRepository.save(gobangGame).getId();
     }
 
     @Override
-    public boolean joinGame(int gameId) {
-        Game game = findGameOrThrow(gameId);
-        if (game.getPlayerCount() == 1) {
-            game.setP2Token(UUID.randomUUID().toString());
-            return true;
+    public void joinGame(int gameId) {
+        GobangGame gobangGame = findGameOrThrow(gameId);
+        if (gobangGame.getPlayerCount() == 1) {
+            gobangGame.setP2Token(UUID.randomUUID().toString());
         } else {
-            return false;
+            throw new FullPlayersException(1);
         }
     }
 
     @Override
     public GobangStatusDTO putChess(int gameId, ChessPlacement placement, String token)
-            throws NotYourTurnException, GameIsOverException, TokenInvalidException {
-        Game game = findGameOrThrow(gameId);
-        Gobang gobang = game.applyGameRecordsAndGetGobang();
-        Tile.Color color = validateTokenAndReturnColor(game, gobang, token);
+            throws NotYourTurnException, GameOverException, TokenInvalidException {
+        GobangGame gobangGame = findGameOrThrow(gameId);
+        Gobang gobang = gobangGame.applyGameRecordsAndGetGobang();
+        Tile.Color color = validateTokenAndGetColor(gobangGame, gobang, token);
         gobang.putChess(placement.getRow(), placement.getCol(), color);
-        game.addGameRecord(new GameRecord(placement.getRow(),
+        gobangGame.addGameRecord(new GameRecord(placement.getRow(),
                 placement.getCol(), Converts.colorToTeam(color)));
-        gameRepository.save(game);
+        gameRepository.save(gobangGame);
         if (gobang.isGameOver()) {
             return new GobangStatusDTO(gobang.getWinner());
         }
         return GobangStatusDTO.noWinner();
     }
 
-    private Tile.Color validateTokenAndReturnColor(Game game, Gobang gobang, String token) {
-        if (gobang.getTurn() == Game.P1_COLOR) {
-            validateToken(game.getP1Token(), token);
-            return Game.P1_COLOR;
+    private Tile.Color validateTokenAndGetColor(GobangGame gobangGame, Gobang gobang, String token) {
+        if (gobang.getTurn() == GobangGame.P1_COLOR) {
+            validateToken(gobangGame.getP1Token(), token);
+            return GobangGame.P1_COLOR;
         } else {
-            validateToken(game.getP2Token(), token);
-            return Game.P2_COLOR;
+            validateToken(gobangGame.getP2Token(), token);
+            return GobangGame.P2_COLOR;
         }
     }
 
@@ -81,12 +78,12 @@ public class DefaultGobangService implements GobangService {
     }
 
     @Override
-    public GobangDTO getGameStatus(int gameId) {
-        Game game = findGameOrThrow(gameId);
-        return GobangDTO.project(game.applyGameRecordsAndGetGobang());
+    public GobangSnapshot getGameStatus(int gameId) {
+        GobangGame gobangGame = findGameOrThrow(gameId);
+        return GobangSnapshot.project(gobangGame.applyGameRecordsAndGetGobang());
     }
 
-    private Game findGameOrThrow(int gameId) {
+    private GobangGame findGameOrThrow(int gameId) {
         return gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException(gameId));
     }
 

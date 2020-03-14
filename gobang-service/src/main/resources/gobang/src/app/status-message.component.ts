@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {GobangService} from './gobang-service';
 
 enum Status { WAITING, GAME_STARTED}
 
@@ -18,6 +19,9 @@ enum Status { WAITING, GAME_STARTED}
 export class StatusMessageComponent implements OnInit {
   @Input() status: Status = Status.WAITING;
   isMyTurn = false;
+
+  constructor(private gobangService: GobangService) {
+  }
 
   ngOnInit(): void {
   }

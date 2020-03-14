@@ -1,40 +1,51 @@
 package tw.waterball.gobang.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.*;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
+import tw.waterball.gobang.GameOverException;
+import tw.waterball.gobang.NotYourTurnException;
 import tw.waterball.gobang.Tile;
 import tw.waterball.gobang.services.GobangService;
 import tw.waterball.gobang.services.dto.ChessPlacement;
 import tw.waterball.gobang.services.dto.GobangStatusDTO;
+import tw.waterball.gobang.services.exceptions.JoinGameException;
+
+import java.security.Principal;
 
 @Controller
-public class GobangRealTimeController {
+public class GobangController {
     private GobangService gobangService;
+    private SimpMessagingTemplate simpMessaging;
 
     @Autowired
-    public GobangRealTimeController(GobangService gobangService) {
+    public GobangController(GobangService gobangService, SimpMessagingTemplate simpMessaging) {
         this.gobangService = gobangService;
+        this.simpMessaging = simpMessaging;
     }
 
-    @MessageMapping("/game/{gameId}")
-    @SendTo("/topic/game/{gameId}/newPlayer")
+    @MessageMapping("/games/{gameId}")
+    @SendTo("topic/games/gameStarted")
     public String joinGame(@DestinationVariable int gameId) {
-        if (gobangService.joinGame(gameId)) {
-            return "New player joins.";
-        }
-        return "The game is full of player.";
+        gobangService.joinGame(gameId);
+        return "";
     }
 
-    @MessageMapping("/game/{gameId}/putChess")
-    @SendTo("/topic/game/{gameId}")
+    @MessageMapping("/games/{gameId}/putChess")
+    @SendTo("/topic/games/{gameId}/newChess")
     public PutChessResponse putChess(@DestinationVariable int gameId, @Payload PutChessRequest request) {
         GobangStatusDTO status = gobangService.putChess(gameId, request.chessPlacement, request.token);
         return new PutChessResponse(request.chessPlacement, status.getWinner());
     }
+
+    @MessageExceptionHandler
+    @SendToUser("/queue/error")
+    public String handleException(Exception ex) {
+        return ex.getMessage();
+    }
+
 
     public static class PutChessRequest {
         public String token;
@@ -44,19 +55,11 @@ public class GobangRealTimeController {
     public static class PutChessResponse {
         public ChessPlacement newStep;
         public Tile.Color winner;
+
         public PutChessResponse(ChessPlacement newStep, Tile.Color winner) {
             this.newStep = newStep;
             this.winner = winner;
         }
     }
 
-    public static class Response<T> {
-        public int event;
-        public T data;
-
-        public Response(int event, T data) {
-            this.event = event;
-            this.data = data;
-        }
-    }
 }

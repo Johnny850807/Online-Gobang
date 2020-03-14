@@ -1,25 +1,32 @@
-import {EventEmitter} from '@angular/core';
 import {Game, GobangService} from './gobang-service';
-import {HttpClientModule, HttpClient} from '@angular/common/http';
-import {Observable, Subject} from 'rxjs';
-import { map } from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 import {GameRecord} from './models';
+import {RxStomp, RxStompConfig} from '@stomp/rx-stomp';
 
 export class HttpGobangService implements GobangService {
   game: Game;
+  rxStomp: RxStomp = new RxStomp();
 
   constructor(private http: HttpClient) {
   }
 
   createGame(): Observable<Game> {
-    return this.http.post<Game>('', null);
+    return this.http.post<Game>('/api/games', null);
+  }
+
+
+  listenToGame(): Observable<GameRecord> {
+    const config = new RxStompConfig();
+    config.brokerURL = '';
+    config.reconnectDelay = 200;
+    this.rxStomp.configure(config);
+    this.rxStomp.activate();
+
+    return null;  //  this.rxStomp.watch('/app//games/{gameId}');
   }
 
   putChess(row: number, col: number): Observable<any> {
-    return undefined;
-  }
-
-  listenToGame(): Observable<GameRecord> {
     return undefined;
   }
 

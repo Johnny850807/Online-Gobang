@@ -1,4 +1,4 @@
 package tw.waterball.gobang;
 
-public class GameIsOverException extends RuntimeException {
+public class GameOverException extends RuntimeException {
 }

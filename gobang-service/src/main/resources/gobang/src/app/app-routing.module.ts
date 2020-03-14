@@ -6,7 +6,7 @@ import {HomeComponent} from './home.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
-  {path: 'game', component: GameComponent}];
+  {path: 'game/:id', component: GameComponent}];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

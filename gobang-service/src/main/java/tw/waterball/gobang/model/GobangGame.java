@@ -5,21 +5,20 @@ import tw.waterball.gobang.Tile;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Game {
+public class GobangGame {
     public final static Tile.Color P1_COLOR = Tile.Color.WHITE;
     public final static Tile.Color P2_COLOR = Tile.Color.BLACK;
+    public final static int PLAYER_LIMIT = 2;
+    public final static int BOARD_SIZE = 15;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Positive
-    private int playerCount;
 
     @NotNull // the p1 should exist because one must be a host
     private String p1Token;
@@ -29,12 +28,8 @@ public class Game {
     private List<GameRecord> gameRecords = new ArrayList<>();
 
     public void addGameRecord(GameRecord record) {
-        record.setGame(this);
+        record.setGobangGame(this);
         gameRecords.add(record);
-    }
-
-    public void setPlayerCount(int playerCount) {
-        this.playerCount = playerCount;
     }
 
     public String getP1Token() {
@@ -74,7 +69,7 @@ public class Game {
     }
 
     public Gobang applyGameRecordsAndGetGobang() {
-        Gobang gobang = new Gobang(size);
+        Gobang gobang = new Gobang(BOARD_SIZE);
 
         for (GameRecord gameRecord : gameRecords) {
             Tile.Color color = gameRecord.getTeam() == Team.BLACK ? Tile.Color.BLACK : Tile.Color.WHITE;

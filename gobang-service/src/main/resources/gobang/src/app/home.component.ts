@@ -8,6 +8,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./app.component.css', './home.component.css']
 })
 export class HomeComponent implements OnInit {
+  title = 'Gobang';
 
   constructor(private gobangService: GobangService,
               private router: Router) {
@@ -21,7 +22,7 @@ export class HomeComponent implements OnInit {
     this.gobangService.createGame()
       .forEach(game => {
           console.log('Routing to the game page.');
-          this.router.navigateByUrl('game');
+          this.router.navigateByUrl(`game/${game.id}`);
         }
       );
   }

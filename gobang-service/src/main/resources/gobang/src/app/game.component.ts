@@ -8,6 +8,16 @@ import {Game, GobangService} from './gobang-service';
 })
 export class GameComponent implements OnInit {
 
-  ngOnInit(): void {}
+  constructor(private gobangService: GobangService) {
+  }
+
+  ngOnInit(): void {
+    if (!this.gobangService.game) {
+      const gameId = Number(window.location.pathname.split('/')[1]);
+      this.gobangService.joinGame(gameId);
+    }
+
+    this.gobangService.connect();
+  }
 
 }

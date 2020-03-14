@@ -4,14 +4,16 @@ import {GameRecord, Team} from './models';
 import {BoardService} from './board-service';
 
 export class Game {
-  currentTurn: Team;
 
   constructor(
     public id: number,
-    public link: string,
     public team: Team,
     public token: string) {
   }
+
+  static p1Team = Team.BLACK;
+  static p2Team = Team.WHITE;
+  currentTurn: Team = Team.BLACK;
 
   isYourTurn(): boolean {
     return this.team === this.currentTurn;
@@ -26,19 +28,27 @@ export class NotYourTurnError extends Error {
 
 @Injectable()
 export abstract class GobangService {
+  game: Game;
+  gameRecordsSubject: Subject<GameRecord>;
+  errorSubject: Subject<Error>;
+
   abstract createGame(): Observable<Game>;
 
   abstract putChess(row: number, col: number): Observable<any>;
 
-  abstract listenToGame(): Observable<GameRecord>;
+  abstract connect(): void;
+
+  abstract joinGame(id: number): Observable<Game>;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class StubGobangService implements GobangService {
-  private game: Game;
-  private gameRecordsSubject: Subject<GameRecord>;
+  game: Game;
+  gameRecordsSubject: Subject<GameRecord>;
+  gameStartedSubject: Subject<any>;
+  errorSubject: Subject<Error>;
   private gameSubject: Subject<Game>;
   private boardService: BoardService;
 
@@ -47,7 +57,7 @@ export class StubGobangService implements GobangService {
   }
 
   createGame(): Observable<Game> {
-    this.game = new Game(1, 'http://example.com/games/1', Team.BLACK, 'token');
+    this.game = new Game(1, Game.p1Team, 'token');
     this.gameSubject = new BehaviorSubject<Game>(this.game);
     console.log('The game is created.');
     setTimeout(() => {
@@ -56,8 +66,29 @@ export class StubGobangService implements GobangService {
     return this.gameSubject;
   }
 
+  joinGame(id: number): Observable<Game> {
+    console.log('Joining the game...');
+    const joinGameSubject = new Subject<Game>();
+    setTimeout(() => {
+      this.game = new Game(id, Game.p2Team, 'token');
+      joinGameSubject.next(this.game);
+    }, 400);
+    return joinGameSubject;
+  }
+
+  connect(): void {
+    console.log('Connecting to the server');
+    this.validateIfGameExists();
+    this.gameRecordsSubject = new Subject<GameRecord>();
+    this.gameStartedSubject = new Subject<any>();
+    this.errorSubject = new Subject<Error>();
+    // Do nothing, because this is just a stub.
+    console.log('Connected to the server');
+  }
+
   putChess(row: number, col: number): Observable<any> {
-    console.log(`Put chess at (${row}, ${col})`);
+    console.log(`Putting chess at (${row}, ${col})`);
+    this.validateIfGameExists();
     const putChessSubject = new Subject<any>();
     // simulate put-chess
     setTimeout(() => {
@@ -66,15 +97,18 @@ export class StubGobangService implements GobangService {
         this.gameRecordsSubject.next(new GameRecord(row, col, this.game.team));
         setTimeout(() => this.gameRecordsSubject.next(this.generateRandomGameRecord()), 1000);
       } else {
-        putChessSubject.error(new NotYourTurnError());
+        const err = new NotYourTurnError();
+        this.errorSubject.next(err);
+        putChessSubject.error(err);
       }
     }, 400);
     return putChessSubject;
   }
 
-  listenToGame(): Observable<GameRecord> {
-    this.gameRecordsSubject = new Subject();
-    return this.gameRecordsSubject;
+  private validateIfGameExists() {
+    if (!this.game) {
+      throw new Error('The game has not been created.');
+    }
   }
 
   private generateRandomGameRecord(): GameRecord {
@@ -87,6 +121,8 @@ export class StubGobangService implements GobangService {
     } while (this.boardService.board.isUsed(row, col));
     return new GameRecord(row, col, Team.WHITE);
   }
+
+
 }
 
 

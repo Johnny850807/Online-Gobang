@@ -4,15 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tw.waterball.gobang.services.GobangService;
 import tw.waterball.gobang.services.dto.GobangSnapshot;
+import tw.waterball.gobang.services.dto.JoinGameResult;
+import tw.waterball.gobang.services.exceptions.JoinGameException;
 
-@RequestMapping("/api/game")
+@RequestMapping("/api/games")
 @RestController
-public class GobangController {
+public class GameController {
     public final static int DEFAULT_BOARD_SIZE = 15;
     private GobangService gobangService;
 
     @Autowired
-    public GobangController(GobangService gobangService) {
+    public GameController(GobangService gobangService) {
         this.gobangService = gobangService;
     }
 
@@ -22,7 +24,15 @@ public class GobangController {
         return new CreateGameResponse(gameId,  "/api/games/" + gameId);
     }
 
-
+    @GetMapping("/{gameId}")
+    public JoinGameResult joinGame(@PathVariable int gameId) {
+        try {
+            gobangService.joinGame(gameId);
+            return JoinGameResult.success();
+        } catch (JoinGameException err) {
+            return JoinGameResult.fail(err.getMessage());
+        }
+    }
 
     public static class CreateGameResponse {
         public int gameId;
