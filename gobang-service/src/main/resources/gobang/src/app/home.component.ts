@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {GobangService} from './gobang-service';
 import {Router} from '@angular/router';
+import {of} from "rxjs";
 
 @Component({
   selector: 'app-home',
@@ -12,6 +13,15 @@ export class HomeComponent implements OnInit {
 
   constructor(private gobangService: GobangService,
               private router: Router) {
+  }
+
+  onResize(event) {
+    // const middlePanel = document.getElementById('middle-panel');
+    // const titleBanner = document.getElementById('title-banner');
+    // const overlappingHeight = 66 + middlePanel.clientHeight; // height Of the title banner overlapping with the middlePanel
+    // const offsetY = document.body.clientHeight / 2 - overlappingHeight / 2;
+    // titleBanner.style.top = `${offsetY}px`;
+    // middlePanel.style.top
   }
 
   ngOnInit(): void {

@@ -1,18 +1,16 @@
-<div id="container">
-  <div id="overflow-container">
-    <h1 class="hollow-text">
+<div id="container" (window:resize)="onResize($event)">
+  <div id="middle-panel">
+    <header id="title-banner" class="hollow-text">
       {{title.toUpperCase()}}
-    </h1>
-    <div id="middle-panel">
-      <img alt="Chess Board Banner"
-           id="chess-board-img"
-           src="/assets/img/chessBoardBanner.png">
-      <button type="button"
-              (click)="createGame()"
-              class="btn major-dark-btn" [style.margin-top]="'20px'">
-        Create Game
-      </button>
-    </div>
+    </header>
+    <img alt="Chess Board Banner"
+         id="chess-board-img"
+         src="/assets/img/chessBoardBanner.png">
+    <button type="button"
+            (click)="createGame()" id="create-game-btn"
+            class="major-dark-btn">
+      Create Game
+    </button>
   </div>
 </div>
 

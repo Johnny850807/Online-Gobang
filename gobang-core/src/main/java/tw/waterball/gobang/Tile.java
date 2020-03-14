@@ -1,7 +1,5 @@
 package tw.waterball.gobang;
 
-import java.util.stream.Collectors;
-
 public class Tile {
     private Color color = Color.NONE;
 

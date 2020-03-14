@@ -2,6 +2,13 @@
   --bowl-height: 144px;
 }
 
+#container {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
 .chess-bowl {
   margin-right: 20px;
   margin-left: 20px;

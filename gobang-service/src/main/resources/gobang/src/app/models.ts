@@ -41,7 +41,7 @@ export class Board {
   }
 
   set(row: number, col: number, team: Team) {
-    this.tiles[row][col].yourTeam = team;
+    this.tiles[row][col].team = team;
   }
 
   get(row: number, col: number): Tile {

@@ -12,7 +12,6 @@
   display: flex;
   align-items: center;
   position: relative;
-  padding-bottom: 31%;
 }
 
 .hollow-text {
@@ -30,14 +29,39 @@
   font-weight: bold;
 }
 
-#overflow-container h1 {
+#middle-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 70%;
+}
+
+#title-banner {
+  margin-top: 0;
+  top: 0;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 12vw;
+  font-size: 18vw;
   font-family: arial-rounded-mt, serif;
   font-weight: bold;
   font-stretch: expanded;
+  z-index: 0;
+}
+
+#chess-board-img {
+  margin-top: 10%;
+  width: 100%;
+  max-width: 700px;
+  z-index: 1;
+}
+
+#create-game-btn {
+  font-size: 40px;
+  z-index: 1;
 }
 
 /*RWD Adjustment*/
@@ -47,43 +71,21 @@
   }
 }
 
-@media all and (max-width: 1000px) {
-  #overflow-container {
-    padding-bottom: 50%;
+@media screen and (max-width: 1000px) {
+  #create-game-btn {
+    font-size: 30px;
   }
 }
 
-@media all  and (max-width: 950px) {
+@media screen  and (max-width: 950px) {
   .hollow-text {
     --thick: 3px;
   }
-  #overflow-container h1 {
-    font-size: 120px;
-  }
 }
 
-@media all and (max-width: 700px) {
-  #overflow-container h1 {
-    font-size: 110px;
-  }
+@media screen and (max-width: 700px) {
   #overflow-container {
     padding-bottom: 60%;
   }
 }
 
-/*This panel is absolutely overlapping on the GOBANG title*/
-#middle-panel {
-  display: flex;
-  flex-direction: column;
-  justify-items: center;
-  align-items: center;
-  width: 100%;
-  position: absolute;
-  top: 15%; /*Determine how much it overlaps with the GOBANG title*/
-}
-
-#chess-board-img {
-  width: 45%;
-  min-width: 400px;
-  max-width: 700px;
-}

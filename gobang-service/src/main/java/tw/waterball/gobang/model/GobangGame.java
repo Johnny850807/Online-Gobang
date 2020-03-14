@@ -12,7 +12,6 @@ import java.util.List;
 public class GobangGame {
     public final static Tile.Color P1_COLOR = Tile.Color.WHITE;
     public final static Tile.Color P2_COLOR = Tile.Color.BLACK;
-    public final static int PLAYER_LIMIT = 2;
     public final static int BOARD_SIZE = 15;
 
     @Id

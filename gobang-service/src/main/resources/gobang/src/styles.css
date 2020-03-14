@@ -1,11 +1,14 @@
-html, body {
-  height: 100%;
-}
 
 :root {
   --primary-light-grown: #EFD6A5;
   --primary-dark-grown: #9D7159;
   --primary-darker-grown: #845c47;
+}
+
+
+html, body {
+  height: 100%;
+  background-color: var(--primary-light-grown);
 }
 
 @font-face {
