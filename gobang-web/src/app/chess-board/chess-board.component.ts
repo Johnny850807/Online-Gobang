@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {GobangService} from '../gobang-service';
 import {BoardService} from '../board-service';
 import {GameMove, Team} from '../models';
-import {Howl} from 'howler';
 
 class Position {
   constructor(public x: number,
@@ -41,8 +40,7 @@ export class ChessBoardComponent implements OnInit {
   private readonly blackChessImg: HTMLImageElement;
   private canvas: HTMLCanvasElement;
   private latestMousePos: Position;
-  private gameRecords: GameMove[];
-  private putChessSound: HTMLMediaElement;
+  private gameMoves: GameMove[];
 
   constructor(private gobangService: GobangService,
               private boardService: BoardService) {
@@ -55,23 +53,21 @@ export class ChessBoardComponent implements OnInit {
     this.blackChessImg.src = 'assets/img/black.png';
     this.whiteChessImg = new Image();
     this.whiteChessImg.src = 'assets/img/white.png';
-    this.putChessSound = new Howl({src: ['assets/sound/putChess.mp3']});
   }
 
   ngOnInit(): void {
     console.log(`[ChessBoardComponent]: ngOnInit`);
-    this.gameRecords = [];
+    this.gameMoves = [];
     this.canvas = document.getElementById('chess-board') as HTMLCanvasElement;
     this.initCanvas();
     this.gobangService.gameMovesObservable
-      .forEach(gameRecord => this.appendNewGameRecord(gameRecord));
+      .forEach(gameRecord => this.appendNewGameMove(gameRecord));
     this.chessBoardImg.onload = () => this.repaint();
   }
 
-  private appendNewGameRecord(gameRecord: GameMove) {
-    this.gameRecords.push(gameRecord);
+  private appendNewGameMove(gameMove: GameMove) {
+    this.gameMoves.push(gameMove);
     this.repaint();
-    this.onNewChessPut();
   }
 
   private initCanvas() {
@@ -89,11 +85,6 @@ export class ChessBoardComponent implements OnInit {
       const pos = this.getMousePositionRelativelyToBoard(e.clientX, e.clientY);
       this.gobangService.putChess(pos.y, pos.x);
     };
-  }
-
-  private onNewChessPut() {
-    // noinspection JSIgnoredPromiseFromCall
-    this.putChessSound.play();
   }
 
   private getMousePositionRelativelyToBoard(clientMouseX: number, clientMouseY: number): Position {
@@ -133,7 +124,7 @@ export class ChessBoardComponent implements OnInit {
       context.drawImage(this.selectImg, pixel.x - this.w / 2, pixel.y - this.h / 2, this.w, this.h);
     }
 
-    this.gameRecords.forEach(gameMove => this.renderGameMove(gameMove));
+    this.gameMoves.forEach(gameMove => this.renderGameMove(gameMove));
   }
 
   private renderGameMove(gameMove: GameMove) {

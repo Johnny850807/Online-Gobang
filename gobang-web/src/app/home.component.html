@@ -1,3 +1,7 @@
+
+<p-blockUI [blocked]="blocked"></p-blockUI>
+<p-progressSpinner id="spinner" class="centered"
+                   [style]="{width: '200px', height: '200px'}" [strokeWidth]="'7px'" ></p-progressSpinner>
 <div id="container">
   <div id="middle-panel">
     <header id="title-banner" class="hollow-text">
@@ -11,7 +15,6 @@
               (click)="createGame()" id="create-game-btn"
               class="btn major-dark-btn">
         Create Game
-        <p-progressSpinner id="spinner" [style]="{width: '30px', height: '30px'}" [strokeWidth]="'4px'" ></p-progressSpinner>
       </button>
     </div>
   </div>

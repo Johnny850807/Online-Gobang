@@ -1,5 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Game, GobangService} from './gobang-service';
+import {Component, OnInit} from '@angular/core';
+import {GobangService} from './gobang-service';
+import {SoundPlay} from './sound-play';
 
 @Component({
   selector: 'app-game',
@@ -8,13 +9,15 @@ import {Game, GobangService} from './gobang-service';
 })
 export class GameComponent implements OnInit {
 
-  constructor(private gobangService: GobangService) {
+  constructor(private gobangService: GobangService,
+              private soundPlay: SoundPlay) {
   }
 
   ngOnInit(): void {
     console.log(`[GameComponent]: ngOnInit`);
     if (!this.gobangService.game) {
       this.gobangService.reset();
+      this.soundPlay.subscribe(this.gobangService);
       const gameId = Number(window.location.hash.split('/')[2]);
       console.log(`[GameComponent]: the game id is ${gameId}`);
       this.gobangService.joinGame(gameId)
