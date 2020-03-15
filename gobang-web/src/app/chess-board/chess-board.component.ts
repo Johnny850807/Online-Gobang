@@ -21,11 +21,20 @@ class Position {
 })
 export class ChessBoardComponent implements OnInit {
   public readonly size = 15;
-  public readonly dx = 66;  // hard-coded parameters
-  public readonly dy = 60;
-  public readonly w = 37;
-  public readonly h = 31;
-  public readonly thick = 12;
+  // public readonly boardWidth = 820;
+  // public readonly boardHeight = 820;
+  // public readonly dx = 49;  // hard-coded parameters
+  // public readonly dy = 48;
+  // public readonly w = 40;
+  // public readonly h = 40;
+  // public readonly thick = 11;
+  public readonly boardWidth = 656;
+  public readonly boardHeight = 656;
+  public readonly dx = 39;  // hard-coded parameters
+  public readonly dy = 38;
+  public readonly w = 32;
+  public readonly h = 32;
+  public readonly thick = 8.7;
   private readonly selectImg: HTMLImageElement;
   private readonly chessBoardImg: HTMLImageElement;
   private canvas: HTMLCanvasElement;
@@ -39,12 +48,8 @@ export class ChessBoardComponent implements OnInit {
     this.selectImg = new Image();
     this.selectImg.src = 'assets/img/selected.png';
     this.chessBoardImg = new Image();
-    this.chessBoardImg.src = 'assets/img/chessBoard.svg';
+    this.chessBoardImg.src = 'assets/img/chessBoard.png';
     this.putChessSound = new Howl({src: ['assets/sound/putChess.mp3']});
-  }
-
-  private static roundPosition(pos: Position): Position {
-    return new Position(Math.floor(pos.x), Math.floor(pos.y));
   }
 
   ngOnInit(): void {
@@ -64,6 +69,8 @@ export class ChessBoardComponent implements OnInit {
   }
 
   private initCanvas() {
+    this.canvas.width = this.boardWidth;
+    this.canvas.height = this.boardHeight;
     this.canvas.onmousemove = (e) => {
       let pos = this.getMousePositionRelativelyToBoard(e.clientX, e.clientY);
       pos = this.adjustPosToBeWithinBoard(pos);
@@ -91,28 +98,8 @@ export class ChessBoardComponent implements OnInit {
     const clickX = clientMouseX - canvasRect.x;
     const clickY = clientMouseY - canvasRect.y;
     const pos = this.convertPixelToPos(clickX, clickY);
-    // console.log(`Convert mouse pixels at (${clickY}, ${clickX}) to position (${pos.y}, ${pos.x})`);
+    console.log(`Convert mouse pixels at (${clickY}, ${clickX}) to position (${pos.y}, ${pos.x})`);
     return pos;
-  }
-
-  // Used for testing if the chess's position calculation is correct
-  private drawAllPoints(): void {
-    for (let i = 0; i < this.size; i++) {
-      for (let j = 0; j < this.size; j++) {
-        this.drawCircle('#000000', i, j);
-      }
-    }
-  }
-
-  private drawCircle(chessColor: string, row: number, col: number): void {
-    const canvas = document.getElementById('chess-board') as HTMLCanvasElement;
-    const context = canvas.getContext('2d');
-    context.fillStyle = chessColor;
-    context.beginPath();
-    const pixel = this.convertPosToPixel(col, row);
-    context.arc(pixel.x, pixel.y, 11, 0, 2 * Math.PI, true);
-    context.closePath();
-    context.fill();
   }
 
   private adjustPosToBeWithinBoard(pos: Position): Position {
@@ -124,23 +111,23 @@ export class ChessBoardComponent implements OnInit {
   }
 
   private convertPosToPixel(x: number, y: number): Position {
-    return new Position(this.dx + x * (this.w + this.thick),
-      this.dy + y * (this.h + this.thick));
+    return new Position(this.dx + x * (this.w + this.thick) + this.thick / 2,
+      this.dy + y * (this.h + this.thick) + this.thick / 2);
   }
 
   private convertPixelToPos(x: number, y: number): Position {
-    const row = Math.floor((y - this.dy) / this.h);
-    const col = Math.floor((x - this.dx) / this.w);
+    const row = Math.floor((y - this.dy) / (this.thick + this.h));
+    const col = Math.floor((x - this.dx) / (this.thick + this.w));
     return new Position(col, row);
   }
 
   private repaint() {
     const context = this.canvas.getContext('2d');
-    context.drawImage(this.chessBoardImg, 0, 0, this.canvas.width, this.canvas.height);
+    context.drawImage(this.chessBoardImg, 0, 0, this.boardWidth, this.boardHeight);
 
     if (this.latestMousePos) {
       const pixel = this.convertPosToPixel(this.latestMousePos.x, this.latestMousePos.y);
-      context.drawImage(this.selectImg, pixel.x - this.w / 2, pixel.y - this.h / 2);
+      context.drawImage(this.selectImg, pixel.x - this.w / 2, pixel.y - this.h / 2, this.w, this.h);
     }
 
     this.gameRecords.forEach(gameMove => this.renderGameRecord(gameMove));
@@ -151,4 +138,26 @@ export class ChessBoardComponent implements OnInit {
     this.drawCircle(chessColor, gameMove.row, gameMove.col);
   }
 
+  // Used for testing if the chess's position calculation is correct
+  private drawAllPoints(): void {
+    let color = '#000000';
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
+        this.drawCircle(color, i, j);
+        color = color === '#000000' ? '#ffffff' : '#000000';
+      }
+    }
+  }
+
+  private drawCircle(color: string, row: number, col: number): void {
+    const context = this.canvas.getContext('2d');
+    context.fillStyle = color;
+    context.beginPath();
+    const pixel = this.convertPosToPixel(col, row);
+    context.arc(pixel.x, pixel.y, 11, 0, 2 * Math.PI, true);
+    context.closePath();
+    context.fill();
+  }
+
 }
+

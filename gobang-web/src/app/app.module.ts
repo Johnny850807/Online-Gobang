@@ -10,7 +10,7 @@ import {ShareTheLinkComponent} from './share-the-link/share-the-link.component';
 import {HttpClientModule} from '@angular/common/http';
 import {GobangService, StubGobangService} from './gobang-service';
 import {BoardService} from './board-service';
-import {HttpGobangService} from "./http-gobang-service";
+import {HttpGobangService} from './http-gobang-service';
 
 
 @NgModule({
@@ -28,7 +28,7 @@ import {HttpGobangService} from "./http-gobang-service";
     AppRoutingModule
   ],
   providers: [
-    {provide: GobangService, useClass: HttpGobangService},
+    {provide: GobangService, useClass: StubGobangService},
     {provide: BoardService, useClass: BoardService}],
   bootstrap: [AppComponent]
 })
