@@ -1,13 +1,17 @@
+@import url(//db.onlinewebfonts.com/c/331ec49c0d78e469c42c1d814dd45838?family=Avenir+Book);
 
 :root {
   --primary-light-grown: #EFD6A5;
+  --primary-medium-grown: #AE8A6C;
   --primary-dark-grown: #9D7159;
   --primary-darker-grown: #845c47;
+  --primary-darkest-grown: #754436;
 }
 
 
 html, body {
   height: 100%;
+  margin: 0;
   background-color: var(--primary-light-grown);
 }
 
@@ -16,21 +20,14 @@ html, body {
   src: url(/assets/font/arial-rounded-mt.ttf);
 }
 
-.caret {
-  width: 0;
-  height: 0;
-  display: inline-block;
-  border: 10px solid transparent;
+@font-face {
+  font-family: "Avenir Book";
+  src: url("//db.onlinewebfonts.com/t/331ec49c0d78e469c42c1d814dd45838.eot");
+  src: url("//db.onlinewebfonts.com/t/331ec49c0d78e469c42c1d814dd45838.eot?#iefix")
+  format("embedded-opentype"), url("//db.onlinewebfonts.com/t/331ec49c0d78e469c42c1d814dd45838.woff2")
+  format("woff2"), url("//db.onlinewebfonts.com/t/331ec49c0d78e469c42c1d814dd45838.woff")
+  format("woff"), url("//db.onlinewebfonts.com/t/331ec49c0d78e469c42c1d814dd45838.ttf")
+  format("truetype"), url("//db.onlinewebfonts.com/t/331ec49c0d78e469c42c1d814dd45838.svg#Avenir Book")
+  format("svg");
 }
-.caret.down{
-  border-top-color: black;
-}
-.caret.right{
-  border-left-color: black;
-}
-.caret.up{
-  border-bottom-color: black;
-}
-.caret.left{
-  border-right-color: black;
-}
+

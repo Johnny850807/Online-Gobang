@@ -1,28 +1,44 @@
 #share-the-link-btn {
-  font-size: 18px;
+  font-family: "Avenir Book", serif;
+  background-color: var(--primary-medium-grown);
+  font-size: 22px;
+  color: white;
+  border: 0;
+  padding: 23px 31px 22px 29px;
+  box-shadow: 0 3px 6px #00000029;
+  border-radius: 19px;
+}
+
+#link:active {
+  color: var(--primary-dark-grown);
+}
+
+#link:hover {
+  color: var(--primary-darker-grown);
 }
 
 #link {
+  color: var(--primary-darkest-grown);
+  font-family: "Avenir Book", serif;
   line-height: 20px;
-  font-size: 20px;
+  font-size: 35px;
   margin-left: 10px;
 }
 
 #container {
-  vertical-align: middle;
+  display: flex;
+  align-items: center;
   padding: 20px;
 }
 
-#pot{
-  bottom:15%;
-  position:absolute;
-  -webkit-animation:linear infinite alternate;
-  -webkit-animation-name: run;
-  -webkit-animation-duration: 5s;
+.caret {
+  width: 0;
+  height: 0;
+  display: inline-block;
+  border: 10px solid transparent;
 }
 
-@-webkit-keyframes run {
-  0% { left: 0;}
-  50%{ left : 100%;}
-  100%{ left: 0;}
+
+.caret.right {
+  border-left-color: var(--primary-medium-grown);
 }

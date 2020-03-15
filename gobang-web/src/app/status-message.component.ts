@@ -9,6 +9,9 @@ import {GameNotStartedError, GameOverError, GobangService, NotYourTurnError} fro
   styleUrls: ['./app.component.css'],
   styles: [`
     #bottom-message {
+      font-family: "Avenir Book", serif;
+      color: var(--primary-darkest-grown);
+      font-size: 35px;
       margin-top: 20px;
       text-align: center;
     }
@@ -49,4 +52,5 @@ export class StatusMessageComponent implements OnInit {
       this.message = `The game is over! The winner is ${winner}`;
     });
   }
+
 }

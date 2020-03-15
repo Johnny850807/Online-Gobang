@@ -1,4 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-share-the-link',
@@ -8,9 +9,17 @@ import {Component, Input, OnInit} from '@angular/core';
 export class ShareTheLinkComponent implements OnInit {
   link: string;
 
+  constructor(private messageService: MessageService) {
+  }
+
   ngOnInit(): void {
     console.log(`[ShareTheLinkComponent]: ngOnInit`);
     this.link = window.location.href;
   }
 
+  notifyMessage(title: string, message: string) {
+    this.messageService.add({
+      severity: 'success', summary: title, detail: message
+    });
+  }
 }

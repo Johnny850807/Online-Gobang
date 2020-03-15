@@ -1,7 +1,11 @@
 <div id="container">
-  <button class="major-dark-btn btn" id="share-the-link-btn">
-    Share the link
+  <button id="share-the-link-btn"
+          (click)="notifyMessage('Copied', 'The link has been copied to the clipboard.')"
+          [cdkCopyToClipboard]="link">
+    share the link
   </button>
-  <span class="caret right" [style.margin-left]="'10px'"></span>
-  <a class="align-middle" id="link" href="{{link}}">{{link}}</a>
+  <span class="caret right"
+        [style.margin-left]="'10px'">
+  </span>
+  <a id="link" href="{{link}}">{{link}}</a>
 </div>

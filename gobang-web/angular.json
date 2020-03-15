@@ -24,11 +24,18 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeng/resources/themes/nova-light/theme.css",
+              "node_modules/primeng/resources/primeng.min.css"
             ],
             "scripts": [
               "node_modules/howler/dist/howler.min.js",
-              "node_modules/@stomp/rx-stomp/esm6/index.d.ts"
+              "node_modules/@stomp/rx-stomp/esm6/index.d.ts",
+              "node_modules/chart.js/dist/Chart.js",
+              "node_modules/@angular/cdk/index.d.ts",
+              "node_modules/@fullcalendar/core/main.min.js",
+              "node_modules/quill/dist/quill.js"
             ]
           },
           "configurations": {

@@ -10,7 +10,10 @@ import {ShareTheLinkComponent} from './share-the-link/share-the-link.component';
 import {HttpClientModule} from '@angular/common/http';
 import {GobangService, StubGobangService} from './gobang-service';
 import {BoardService} from './board-service';
-import {HttpGobangService} from './http-gobang-service';
+import {ToastModule} from 'primeng/toast';
+import {MessageService} from 'primeng';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ClipboardModule} from '@angular/cdk/clipboard';
 
 
 @NgModule({
@@ -23,13 +26,17 @@ import {HttpGobangService} from './http-gobang-service';
     ShareTheLinkComponent
   ],
   imports: [
+    ClipboardModule,
+    BrowserAnimationsModule,
+    ToastModule,
     HttpClientModule,
     BrowserModule,
     AppRoutingModule
   ],
   providers: [
     {provide: GobangService, useClass: StubGobangService},
-    {provide: BoardService, useClass: BoardService}],
+    {provide: BoardService, useClass: BoardService},
+    {provide: MessageService, useClass: MessageService}],
   bootstrap: [AppComponent]
 })
 export class AppModule {
