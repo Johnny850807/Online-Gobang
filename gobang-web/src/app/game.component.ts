@@ -14,6 +14,7 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     console.log(`[GameComponent]: ngOnInit`);
     if (!this.gobangService.game) {
+      this.gobangService.reset();
       const gameId = Number(window.location.hash.split('/')[2]);
       console.log(`[GameComponent]: the game id is ${gameId}`);
       this.gobangService.joinGame(gameId)

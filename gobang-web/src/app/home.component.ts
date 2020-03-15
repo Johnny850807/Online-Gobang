@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {GobangService} from './gobang-service';
 import {Router} from '@angular/router';
-import {of} from "rxjs";
 
 @Component({
   selector: 'app-home',
@@ -16,6 +15,8 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('[HomeComponent] ngOnInit');
+    this.gobangService.reset();
   }
 
   createGame() {

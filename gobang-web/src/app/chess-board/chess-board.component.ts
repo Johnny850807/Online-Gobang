@@ -65,7 +65,7 @@ export class ChessBoardComponent implements OnInit {
     this.initCanvas();
     this.gobangService.gameMovesObservable
       .forEach(gameRecord => this.appendNewGameRecord(gameRecord));
-    this.repaint();
+    this.chessBoardImg.onload = () => this.repaint();
   }
 
   private appendNewGameRecord(gameRecord: GameMove) {

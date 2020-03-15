@@ -1,10 +1,13 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {GameNotStartedError, GameOverError, GobangService, NotYourTurnError} from './gobang-service';
+import {Component, OnInit} from '@angular/core';
+import {GameNotStartedError, GobangService, NotYourTurnError} from './gobang-service';
 
 @Component({
   selector: 'app-status-message',
   template: `
-    <p class="major-dark-font" id="bottom-message">{{message}}</p>
+    <p class="major-dark-font" id="bottom-message">{{message}}
+      <p-progressSpinner id="spinner" [style]="{width: '30px', height: '30px'}"
+                         [strokeWidth]="'4px'"></p-progressSpinner>
+    </p>
   `,
   styleUrls: ['./app.component.css'],
   styles: [`
@@ -30,8 +33,10 @@ export class StatusMessageComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(`[StatusMessageComponent]: ngOnInit`);
+    this.setShowSpinner(true);
     this.gobangService.gameStartedObservable.subscribe(r => {
       this.message = 'New player joined! Game started.';
+      this.setShowSpinner(false);
     });
 
     this.gobangService.errorObservable.subscribe(err => {
@@ -53,4 +58,9 @@ export class StatusMessageComponent implements OnInit {
     });
   }
 
+
+  setShowSpinner(show: boolean) {
+    const spinner = document.getElementById('spinner');
+    spinner.style.display = show ? 'inline' : 'none';
+  }
 }

@@ -60,6 +60,8 @@ export abstract class GobangService {
   putChessObservable: Observable<any>;
   gameOverObservable: Observable<Team>;
 
+  abstract reset();
+
   abstract createGame(): Observable<Game>;
 
   abstract putChess(row: number, col: number): Observable<any>;
@@ -83,10 +85,9 @@ export class StubGobangService implements GobangService {
 
   constructor(boardService: BoardService) {
     this.boardService = boardService;
-    this.initSubjects();
   }
 
-  private initSubjects() {
+  reset() {
     this.gameMovesSubject = new Subject<GameMove>();
     this.gameStartedSubject = new Subject<any>();
     this.putChessSubject = new ReplaySubject<any>(1);

@@ -21,10 +21,13 @@ export class HttpGobangService implements GobangService {
   private gameOverSubject: Subject<Team>;
 
   constructor(private http: HttpClient) {
-    this.initSubjects();
   }
 
-  private initSubjects() {
+  reset() {
+    if (this.rxStomp.active) {
+      this.rxStomp.deactivate();
+    }
+    this.game = undefined;
     this.gameMovesSubject = new Subject<GameMove>();
     this.putChessSubject = new ReplaySubject<any>(1);
     this.gameStartedSubject = new ReplaySubject<any>(1);
@@ -89,8 +92,7 @@ export class HttpGobangService implements GobangService {
     this.rxStomp.watch('/topic/games/gameStarted')
       .subscribe(r => {
         console.log('New player has joined.');
-        this.gameStartedSubject.next();
-        this.gameStartedSubject.complete();
+        this.gameStarted();
       });
 
     this.rxStomp.watch(`/queue/${this.game.id}/${this.game.token}/error`)
@@ -127,13 +129,15 @@ export class HttpGobangService implements GobangService {
   }
 
   putChess(row: number, col: number): Observable<any> {
-    this.rxStomp.publish({
-      destination: `/app/games/${this.game.id}/putChess`,
-      body: JSON.stringify({
-        token: this.game.token,
-        chessPlacement: {row, col}
-      })
-    });
+    if (this.rxStomp.active && this.game.started) {
+      this.rxStomp.publish({
+        destination: `/app/games/${this.game.id}/putChess`,
+        body: JSON.stringify({
+          token: this.game.token,
+          chessPlacement: {row, col}
+        })
+      });
+    }
     return this.putChessSubject;
   }
 

@@ -31,3 +31,7 @@ html, body {
   format("svg");
 }
 
+.btn {
+  cursor: pointer;
+  border: 0;
+}
