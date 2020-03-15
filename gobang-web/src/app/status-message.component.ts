@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {GameNotStartedError, GobangService, NotYourTurnError} from './gobang-service';
+import {GameNotStartedError, GobangService, InvalidPositionError, NotYourTurnError} from './gobang-service';
 
 @Component({
   selector: 'app-status-message',
@@ -25,6 +25,7 @@ export class StatusMessageComponent implements OnInit {
   static GAME_NOT_STARTED = 'The game has not been started, please wait for the player to join.';
   static NOT_YOUR_TURN = 'Not your turn!';
   static ITS_YOUR_TURN = 'It\'s your turn';
+  static INVALID_POSITION = 'This position is invalid!';
 
   message = StatusMessageComponent.WAITING;
 
@@ -44,6 +45,8 @@ export class StatusMessageComponent implements OnInit {
         this.message = StatusMessageComponent.GAME_NOT_STARTED;
       } else if (err instanceof NotYourTurnError) {
         this.message = StatusMessageComponent.NOT_YOUR_TURN;
+      } else if (err instanceof InvalidPositionError) {
+        this.message = StatusMessageComponent.INVALID_POSITION;
       }
     });
 

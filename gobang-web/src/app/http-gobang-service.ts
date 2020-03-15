@@ -1,4 +1,11 @@
-import {Game, GameOverError, GobangService, NotYourTurnError, TokenInvalidError} from './gobang-service';
+import {
+  Game,
+  GameOverError,
+  GobangService,
+  InvalidPositionError,
+  NotYourTurnError,
+  TokenInvalidError
+} from './gobang-service';
 import {HttpClient} from '@angular/common/http';
 import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {GameMove, Team} from './models';
@@ -108,6 +115,9 @@ export class HttpGobangService implements GobangService {
             break;
           case 4002:
             this.putChessSubject.error(new TokenInvalidError());
+            break;
+          case 4003:
+            this.putChessSubject.error(new InvalidPositionError());
             break;
         }
       });

@@ -27,6 +27,12 @@ export class Game {
   }
 }
 
+export class InvalidPositionError extends Error {
+  constructor() {
+    super('The position is invalid.');
+  }
+}
+
 export class TokenInvalidError extends Error {
   constructor() {
     super('The token is invalid.');

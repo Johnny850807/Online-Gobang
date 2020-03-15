@@ -87,10 +87,7 @@ export class ChessBoardComponent implements OnInit {
     };
     this.canvas.onclick = (e) => {
       const pos = this.getMousePositionRelativelyToBoard(e.clientX, e.clientY);
-      this.gobangService.putChess(pos.y, pos.x)
-        .subscribe(() => {
-          console.log('The chess has been put.');
-        });
+      this.gobangService.putChess(pos.y, pos.x);
     };
   }
 
