@@ -14,6 +14,7 @@ import {ToastModule} from 'primeng/toast';
 import {MessageService} from 'primeng';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ClipboardModule} from '@angular/cdk/clipboard';
+import {HttpGobangService} from './http-gobang-service';
 
 
 @NgModule({
@@ -34,7 +35,7 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
     AppRoutingModule
   ],
   providers: [
-    {provide: GobangService, useClass: StubGobangService},
+    {provide: GobangService, useClass: HttpGobangService},
     {provide: BoardService, useClass: BoardService},
     {provide: MessageService, useClass: MessageService}],
   bootstrap: [AppComponent]

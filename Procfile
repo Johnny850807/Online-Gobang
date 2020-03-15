@@ -1,0 +1,1 @@
+web: java -jar gobang-service/target/gobang-service-0.0.1-SNAPSHOT.jar

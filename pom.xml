@@ -13,6 +13,7 @@
     <groupId>tw.waterball</groupId>
     <artifactId>gobang</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>gobang</name>
     <description>Gobang</description>
 
