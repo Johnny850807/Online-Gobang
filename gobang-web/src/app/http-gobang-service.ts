@@ -142,7 +142,7 @@ export class HttpGobangService implements GobangService {
   }
 
   private urlPrefix(path: string): string {
-    return `http://localhost:8080/${path}`;
+    return `https://gobang-tw.herokuapp.com${path}`;
   }
 
   get errorObservable(): Observable<Error> {
