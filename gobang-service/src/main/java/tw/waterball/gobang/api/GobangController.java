@@ -47,7 +47,7 @@ public class GobangController implements ApplicationListener {
         try {
             PutChessResponse response = gobangService.putChess(gameId, request.chessPlacement, request.token);
             simpMessaging.convertAndSend(String.format("/topic/games/%d/newChess", gameId), response);
-        } catch (NotYourTurnException | GameOverException err) {
+        } catch (NotYourTurnException | GameOverException | InvalidPositionException err) {
             String destination = String.format("/queue/%d/%s/error", gameId, request.token);
             simpMessaging.convertAndSend(destination,
                     new ErrorMessage(errNoMap.get(err.getClass()), err.getMessage()));
