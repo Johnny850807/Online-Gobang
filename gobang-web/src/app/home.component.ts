@@ -19,9 +19,12 @@ export class HomeComponent implements OnInit {
   }
 
   createGame() {
+    const spinner = document.getElementById('spinner');
+    spinner.style.display = 'inline';
     this.gobangService.createGame()
       .subscribe(game => {
           console.log('Routing to the game page.');
+          spinner.style.display = 'none';
           this.router.navigateByUrl(`game/${game.id}`);
         }
       );

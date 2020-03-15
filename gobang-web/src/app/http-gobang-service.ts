@@ -10,6 +10,7 @@ import {map} from 'rxjs/operators';
   providedIn: 'root'
 })
 export class HttpGobangService implements GobangService {
+  private readonly domain = 'gobang-tw.herokuapp.com';
   game: Game;
   isHost = false;
   rxStomp: RxStomp = new RxStomp();
@@ -77,7 +78,7 @@ export class HttpGobangService implements GobangService {
 
   connect(): void {
     const config = new RxStompConfig();
-    config.brokerURL = 'ws://localhost:8080/gobang-websocket/websocket';
+    config.brokerURL = `wss://${this.domain}/gobang-websocket/websocket`;
     config.reconnectDelay = 200;
     if (this.rxStomp.active) {
       this.rxStomp.deactivate();
@@ -142,7 +143,7 @@ export class HttpGobangService implements GobangService {
   }
 
   private urlPrefix(path: string): string {
-    return `https://gobang-tw.herokuapp.com${path}`;
+    return `https://${this.domain}${path}`;
   }
 
   get errorObservable(): Observable<Error> {

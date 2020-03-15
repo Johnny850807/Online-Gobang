@@ -6,11 +6,14 @@
     <img alt="Chess Board Banner"
          id="chess-board-img"
          src="/assets/img/chessBoardBanner.png">
-    <button type="button"
-            (click)="createGame()" id="create-game-btn"
-            class="major-dark-btn">
-      Create Game
-    </button>
+    <div id="bottom-panel">
+      <button type="button"
+              (click)="createGame()" id="create-game-btn"
+              class="major-dark-btn">
+        Create Game
+        <p-progressSpinner id="spinner" [style]="{width: '30px', height: '30px'}" [strokeWidth]="'4px'" ></p-progressSpinner>
+      </button>
+    </div>
   </div>
 </div>
 

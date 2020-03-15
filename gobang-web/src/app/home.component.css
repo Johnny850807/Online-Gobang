@@ -59,10 +59,6 @@
   z-index: 1;
 }
 
-#create-game-btn {
-  font-size: 40px;
-  z-index: 1;
-}
 
 /*RWD Adjustment*/
 @media all and (max-width: 1600px) {
@@ -83,3 +79,19 @@
   }
 }
 
+#bottom-panel {
+  display: flex;
+  align-items: center;
+}
+
+#spinner {
+  display: none;
+  margin-left: 15px;
+}
+
+#create-game-btn {
+  display: flex;
+  width: auto;
+  font-size: 40px;
+  z-index: 1;
+}

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Game, GobangService} from '../gobang-service';
+import {GobangService} from '../gobang-service';
 import {BoardService} from '../board-service';
 import {GameMove, Team} from '../models';
 import {Howl} from 'howler';
@@ -37,6 +37,8 @@ export class ChessBoardComponent implements OnInit {
   public readonly thick = 8.7;
   private readonly selectImg: HTMLImageElement;
   private readonly chessBoardImg: HTMLImageElement;
+  private readonly whiteChessImg: HTMLImageElement;
+  private readonly blackChessImg: HTMLImageElement;
   private canvas: HTMLCanvasElement;
   private latestMousePos: Position;
   private gameRecords: GameMove[];
@@ -49,6 +51,10 @@ export class ChessBoardComponent implements OnInit {
     this.selectImg.src = 'assets/img/selected.png';
     this.chessBoardImg = new Image();
     this.chessBoardImg.src = 'assets/img/chessBoard.png';
+    this.blackChessImg = new Image();
+    this.blackChessImg.src = 'assets/img/black.png';
+    this.whiteChessImg = new Image();
+    this.whiteChessImg.src = 'assets/img/white.png';
     this.putChessSound = new Howl({src: ['assets/sound/putChess.mp3']});
   }
 
@@ -98,7 +104,7 @@ export class ChessBoardComponent implements OnInit {
     const clickX = clientMouseX - canvasRect.x;
     const clickY = clientMouseY - canvasRect.y;
     const pos = this.convertPixelToPos(clickX, clickY);
-    console.log(`Convert mouse pixels at (${clickY}, ${clickX}) to position (${pos.y}, ${pos.x})`);
+    // console.log(`Convert mouse pixels at (${clickY}, ${clickX}) to position (${pos.y}, ${pos.x})`);
     return pos;
   }
 
@@ -130,12 +136,11 @@ export class ChessBoardComponent implements OnInit {
       context.drawImage(this.selectImg, pixel.x - this.w / 2, pixel.y - this.h / 2, this.w, this.h);
     }
 
-    this.gameRecords.forEach(gameMove => this.renderGameRecord(gameMove));
+    this.gameRecords.forEach(gameMove => this.renderGameMove(gameMove));
   }
 
-  private renderGameRecord(gameMove: GameMove) {
-    const chessColor = gameMove.team === Team.WHITE ? '#ffffff' : '#000000';
-    this.drawCircle(chessColor, gameMove.row, gameMove.col);
+  private renderGameMove(gameMove: GameMove) {
+    this.drawChess(gameMove.team, gameMove.row, gameMove.col);
   }
 
   // Used for testing if the chess's position calculation is correct
@@ -149,7 +154,23 @@ export class ChessBoardComponent implements OnInit {
     }
   }
 
-  private drawCircle(color: string, row: number, col: number): void {
+  private drawChess(team: Team, row: number, col: number) {
+    const context = this.canvas.getContext('2d');
+    const img = team === Team.WHITE ? this.whiteChessImg : this.blackChessImg;
+    const pixel = this.convertPosToPixel(col, row);
+
+    // first draw the shadow
+    context.fillStyle = 'rgba(0,0,0,0.29)';
+    context.beginPath();
+    context.arc(pixel.x + 3, pixel.y + 4, 14, 0, 2 * Math.PI, true);
+    context.closePath();
+    context.fill();
+
+    // then draw the chess onto the shadow
+    context.drawImage(img, pixel.x - this.w / 2, pixel.y - this.h / 2, this.w, this.h);
+  }
+
+  private drawCircle(color: string, row: number, col: number) {
     const context = this.canvas.getContext('2d');
     context.fillStyle = color;
     context.beginPath();

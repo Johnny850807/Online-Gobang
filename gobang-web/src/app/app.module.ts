@@ -15,6 +15,8 @@ import {MessageService} from 'primeng';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {HttpGobangService} from './http-gobang-service';
+import { HashLocationStrategy, LocationStrategy  } from '@angular/common';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
 
 
 @NgModule({
@@ -27,6 +29,7 @@ import {HttpGobangService} from './http-gobang-service';
     ShareTheLinkComponent
   ],
   imports: [
+    ProgressSpinnerModule,
     ClipboardModule,
     BrowserAnimationsModule,
     ToastModule,
@@ -37,7 +40,8 @@ import {HttpGobangService} from './http-gobang-service';
   providers: [
     {provide: GobangService, useClass: HttpGobangService},
     {provide: BoardService, useClass: BoardService},
-    {provide: MessageService, useClass: MessageService}],
+    {provide: MessageService, useClass: MessageService},
+    {provide : LocationStrategy , useClass: HashLocationStrategy}],
   bootstrap: [AppComponent]
 })
 export class AppModule {
