@@ -144,4 +144,8 @@ public class Board {
     public int size() {
         return size;
     }
+
+    public boolean hasUsed(int row, int col) {
+        return this.tiles[row][col].getColor() != Tile.Color.NONE;
+    }
 }

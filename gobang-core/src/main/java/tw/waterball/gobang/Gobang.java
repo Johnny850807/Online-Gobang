@@ -11,20 +11,23 @@ public class Gobang {
 
     public void putChess(int row, int col, Tile.Color color)
             throws NotYourTurnException, GameOverException {
-        if (isGameOver()) {
-            throw new GameOverException();
-        }
-
-        if (turn != color) {
-            throw new NotYourTurnException(color);
-        }
-
+        validateMove(row, col, color);
         board.put(row, col, color);
 
         if (board.hasFiveConnected(row, col, color)) {
             winner = color;
         } else {
             turn = turn == Tile.Color.WHITE ? Tile.Color.BLACK : Tile.Color.WHITE;
+        }
+    }
+
+    private void validateMove(int row, int col, Tile.Color color) {
+        if (isGameOver()) {
+            throw new GameOverException();
+        } else if (turn != color) {
+            throw new NotYourTurnException(color);
+        } else if (board.hasUsed(row, col)) {
+            throw new InvalidPositionException();
         }
     }
 

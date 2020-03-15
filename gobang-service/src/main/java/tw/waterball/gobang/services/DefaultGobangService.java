@@ -2,10 +2,7 @@ package tw.waterball.gobang.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tw.waterball.gobang.GameOverException;
-import tw.waterball.gobang.Gobang;
-import tw.waterball.gobang.NotYourTurnException;
-import tw.waterball.gobang.Tile;
+import tw.waterball.gobang.*;
 import tw.waterball.gobang.model.GobangGame;
 import tw.waterball.gobang.model.GameMove;
 import tw.waterball.gobang.model.repositories.GameRepository;
@@ -48,7 +45,7 @@ public class DefaultGobangService implements GobangService {
 
     @Override
     public PutChessResponse putChess(int gameId, ChessPlacement placement, String token)
-            throws NotYourTurnException, GameOverException, TokenInvalidException {
+            throws NotYourTurnException, GameOverException, InvalidPositionException, TokenInvalidException {
         GobangGame gobangGame = findGameOrThrow(gameId);
         Gobang gobang = gobangGame.applyGameRecordsAndGetGobang();
 

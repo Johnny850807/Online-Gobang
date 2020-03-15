@@ -10,6 +10,7 @@ import org.springframework.messaging.simp.broker.BrokerAvailabilityEvent;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import tw.waterball.gobang.GameOverException;
+import tw.waterball.gobang.InvalidPositionException;
 import tw.waterball.gobang.NotYourTurnException;
 import tw.waterball.gobang.Tile;
 import tw.waterball.gobang.services.GobangService;
@@ -32,6 +33,7 @@ public class GobangController implements ApplicationListener {
         errNoMap.put(NotYourTurnException.class, 4000);
         errNoMap.put(GameOverException.class, 4001);
         errNoMap.put(TokenInvalidException.class, 4002);
+        errNoMap.put(InvalidPositionException.class, 4003);
     }
 
     @Autowired
