@@ -36,12 +36,12 @@ pipeline {
                     parallel {
                         stage('Build Java image') {
                             steps {
-                                sh 'docker build gobang-service -t gobang-service:1.0'
+                                sh 'docker build -t gobang-service:1.0 gobang-service'
                             }
                         }
                         stage('Build Web image') {
                             steps {
-                                sh 'docker build gobang-web -t gobang-web:1.0'
+                                sh 'docker build -t gobang-web:1.0 gobang-web'
                             }
                         }
                     }
