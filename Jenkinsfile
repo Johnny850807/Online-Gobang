@@ -27,12 +27,12 @@ pipeline {
         }
         stage('Build Java image') {
             steps {
-                sh 'cd gobang-service && docker build . -t gobang-service:1.0'
+                sh 'docker build gobang-service -t gobang-service:1.0'
             }
         }
         stage('Build Web image') {
             steps {
-                sh 'cd gobang-web && docker build . -t gobang-web:1.0'
+                sh 'docker build gobang-web -t gobang-web:1.0'
             }
         }
         stage('Run API server') {
