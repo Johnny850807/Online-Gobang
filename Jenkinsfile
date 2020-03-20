@@ -19,10 +19,10 @@ pipeline {
                 }
             }
             steps {
+                sh 'npm install --save-dev @angular/compiler'
                 sh 'npm install --save-dev @angular-devkit/build-angular'
                 sh 'npm install --save-dev @angular/compiler-cli'
-                sh 'cd gobang-web && ng build --outputPath ../gobang-service/src/main/resources/public'
-                sh 'ng build'
+                sh 'cd gobang-web && ng build --outputPath ./dist'
             }
         }
         stage('Build image') {
