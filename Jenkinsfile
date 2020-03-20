@@ -25,9 +25,24 @@ pipeline {
                 sh 'cd gobang-web && npm install && npm run build'
             }
         }
-        stage('Build image') {
+        stage('Build Java image') {
             steps {
-                sh 'docker build . -t gobang:1.0'
+                sh 'cd gobang-service && docker build . -t gobang-service:1.0'
+            }
+        }
+        stage('Build Web image') {
+            steps {
+                sh 'cd gobang-web && docker build . -t gobang-web:1.0'
+            }
+        }
+        stage('Run API server') {
+            steps {
+                sh 'docker run --name gobang-service --network host -d -p 8080:8080 gobang-service'
+            }
+        }
+        stage('Run Web server') {
+            steps {
+                sh 'docker run --name gobang-web --network host -d -p 80:80 gobang-web'
             }
         }
     }

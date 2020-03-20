@@ -17,7 +17,8 @@ import {map} from 'rxjs/operators';
   providedIn: 'root'
 })
 export class HttpGobangService implements GobangService {
-  private readonly domain = 'gobang-tw.herokuapp.com';
+  private readonly domain = '140.112.31.193:8080';
+  private readonly secureProtocol = false;
   game: Game;
   isHost = false;
   rxStomp: RxStomp = new RxStomp();
@@ -88,7 +89,7 @@ export class HttpGobangService implements GobangService {
 
   connect(): void {
     const config = new RxStompConfig();
-    config.brokerURL = `wss://${this.domain}/gobang-websocket/websocket`;
+    config.brokerURL = `ws${this.secureProtocol ? 's' : ''}://${this.domain}/gobang-websocket/websocket`;
     config.reconnectDelay = 200;
     if (this.rxStomp.active) {
       this.rxStomp.deactivate();
@@ -157,7 +158,7 @@ export class HttpGobangService implements GobangService {
   }
 
   private urlPrefix(path: string): string {
-    return `https://${this.domain}${path}`;
+    return `http${this.secureProtocol ? 's' : ''}://${this.domain}${path}`;
   }
 
   get errorObservable(): Observable<Error> {
