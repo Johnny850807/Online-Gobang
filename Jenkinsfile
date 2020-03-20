@@ -24,6 +24,7 @@ pipeline {
         }
         stage('Build image') {
             steps {
+                sh 'cd gobang-web'
                 sh 'docker build . -t gobang:1.0'
             }
         }
