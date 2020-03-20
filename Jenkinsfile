@@ -19,7 +19,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'cd gobang-web && npm install && npm run build'
+                sh 'cd gobang-web && sudo npm install && npm run build'
             }
         }
         stage('Build image') {
