@@ -19,7 +19,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'cd gobang-web'
+                sh 'cd gobang-web && ng build --outputPath ../gobang-service/src/main/resources/public'
                 sh 'ng build'
             }
         }
