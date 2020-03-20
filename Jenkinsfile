@@ -15,12 +15,11 @@ pipeline {
         stage('Build Web') {
             agent {
                 docker {
-                    image 'pivotalpa/angular-cli'
+                    image 'node:12.7-alpine'
                 }
             }
             steps {
-                sh 'cd gobang-web && npm install'
-                sh 'cd gobang-web && ng build --outputPath ./dist'
+                sh 'cd gobang-web && npm install && npm run build'
             }
         }
         stage('Build image') {
