@@ -19,6 +19,7 @@ pipeline {
                 }
             }
             steps {
+                sh 'whoami'
                 sh 'cd gobang-web && sudo npm install && npm run build'
             }
         }
