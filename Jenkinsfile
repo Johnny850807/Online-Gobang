@@ -19,12 +19,12 @@ pipeline {
                 }
             }
             steps {
+                sh 'cd gobang-web'
                 sh 'ng build'
             }
         }
         stage('Build image') {
             steps {
-                sh 'cd gobang-web'
                 sh 'docker build . -t gobang:1.0'
             }
         }
