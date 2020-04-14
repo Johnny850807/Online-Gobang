@@ -9,6 +9,12 @@ pipeline {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
+        
+        stage('Build Java image') {
+            steps {
+                sh 'docker build -t gobang-service:1.0 gobang-service'
+            }
+        }
         stage('Build Web') {
             agent {
                 docker {
@@ -20,11 +26,6 @@ pipeline {
             }
         }
         
-        stage('Build Java image') {
-            steps {
-                sh 'docker build -t gobang-service:1.0 gobang-service'
-            }
-        }
         stage('Build Web image') {
             steps {
                 sh 'docker build -t gobang-web:1.0 gobang-web'
