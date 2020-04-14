@@ -18,7 +18,7 @@ import {map} from 'rxjs/operators';
 })
 export class HttpGobangService implements GobangService {
   private readonly port = '10001';
-  private readonly domain = `140.112.31.193:${this.port}`;
+  private readonly domain = `140.112.31.198:${this.port}`;
   private readonly secureProtocol = false;
   game: Game;
   isHost = false;
