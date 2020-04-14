@@ -18,6 +18,7 @@ pipeline {
             steps {
                 sh 'cd gobang-web && npm install && npm run build'
             }
+        }
         
         stage('Build Java image') {
             steps {
@@ -28,7 +29,7 @@ pipeline {
             steps {
                 sh 'docker build -t gobang-web:1.0 gobang-web'
             }
-        
+        }
         stage('Run API server') {
             steps {
                 sh 'docker run --rm --name gobang-service --network host -d -p 10001:10001 gobang-service'
